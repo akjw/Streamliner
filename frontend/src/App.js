@@ -8,7 +8,7 @@ import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import UserProfile from './components/UserProfile'
 import AddProject from './components/AddProject'
-import {Alert} from 'react-bootstrap'
+import {Alert, Container} from 'react-bootstrap'
 import Axios from 'axios';
 import {decode} from 'jsonwebtoken'
 
@@ -33,7 +33,8 @@ function App() {
         setIsAuth(true)
       }
     }
-  }, [])
+    setRedirect(false)
+  }, [redirect])
 
   function logoutHandler(e){
     e.preventDefault();
@@ -90,26 +91,28 @@ function App() {
 
 
   return (
-    <div className="App">
+      <div className="App">
        <Router>
           <Navigation user={user} logoutHandler={logoutHandler}/>
           {globalError && <Alert variant="danger">{globalError}</Alert>}
-          <Switch>
-            <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} />
-            <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} /> : <Redirect to="/login"/>}/>
-            <Route exact path="/profile" render={() => isAuth? <UserProfile user={user}/> : <Redirect to="/login"/>} /> 
-            {/* <Route exact path="/users/:id" component={User}/> */}
-            {/* <Route exact path="/users" component={AllUsers}/> */}
-            <Route path="/projects/new" exact render={() => 
-              isAuth && redirect ? <Redirect to="/dashboard" /> 
-              : isAuth ? <AddProject user={user} setRedirect={setRedirect}/> 
-              : <Redirect to="/login"/>
-            }/>
-            {/* <Route path="/projects/new" exact render={() => <AddProject user={user}/>} /> */}
-            {/* <Route path="/projects/:id" exact component={Project} /> */}
-            <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} />} />
-            <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />
-          </Switch>
+          <Container>
+            <Switch>
+              <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} />
+              <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} /> : <Redirect to="/login"/>}/>
+              <Route exact path="/profile" render={() => isAuth? <UserProfile user={user}/> : <Redirect to="/login"/>} /> 
+              {/* <Route exact path="/users/:id" component={User}/> */}
+              {/* <Route exact path="/users" component={AllUsers}/> */}
+              <Route path="/projects/new" exact render={() => 
+                isAuth && redirect ? <Redirect to="/dashboard" /> 
+                : isAuth ? <AddProject user={user} setRedirect={setRedirect}/> 
+                : <Redirect to="/login"/>
+              }/>
+              {/* <Route path="/projects/new" exact render={() => <AddProject user={user}/>} /> */}
+              {/* <Route path="/projects/:id" exact component={Project} /> */}
+              <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} />} />
+              <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />
+            </Switch>
+          </Container>
         </Router>
     </div>
   );

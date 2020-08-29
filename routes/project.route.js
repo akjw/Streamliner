@@ -5,7 +5,7 @@ const checkToken = require('../config/config')
 // Show one project
 router.get("/:id", async (req, res) => {
   try {
-    let project =  await Project.findById(req.params.id);
+    let project =  await (await Project.findById(req.params.id)).populate('members').populate('phases');
     res.status(200).json({
       message: 'Project fetched',
       project,

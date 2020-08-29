@@ -99,15 +99,20 @@ function AddProject({user, setRedirect}) {
             <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description"/>
           </Row>
           <Row>
-             <Form.Label>Project Members</Form.Label>
+            <Form.Label>Project Members</Form.Label>
              {users.count == 0 && <p>There are no other members in your organization</p>}
-             {users.map((user, i) => (
-                    <div key={i} style={{display: 'block'}}>
-                      <input type="checkbox" name="members" value={user._id} onChange={handleInputChange} />
-                      <label>{user.firstname} {user.lastname} ({user.email})</label>
-                    </div>
-                  ))}
           </Row>
+             {users.map((user, i) => (
+                    // <div key={i} style={{display: 'block'}}>
+                    //   <input type="checkbox" name="members" value={user._id} onChange={handleInputChange} />
+                    //   <label>{user.firstname} {user.lastname} ({user.email})</label>
+                    // </div>
+                    <Row key={i}>
+                      <Form.Check type='checkbox' name="members"
+                    value={user._id}
+                    label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} multiple/>
+                    </Row>
+                  ))}
           <Row>
             <Form.Control name="startDate" type="date" onChange={changeHandler} />
           </Row>
