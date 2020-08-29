@@ -18,6 +18,7 @@ function App() {
   const [globalError, setGlobalError] = useState(null)
   const [user, setUser] = useState(null)
   const [isAuth, setIsAuth] = useState(false)
+  const [redirect, setRedirect] = useState(false)
 
   useEffect(() => {
     let token = localStorage.getItem('token');
@@ -99,7 +100,12 @@ function App() {
             <Route exact path="/profile" render={() => isAuth? <UserProfile user={user}/> : <Redirect to="/login"/>} /> 
             {/* <Route exact path="/users/:id" component={User}/> */}
             {/* <Route exact path="/users" component={AllUsers}/> */}
-            <Route path="/projects/new" exact render={() => <AddProject user={user}/>} />
+            <Route path="/projects/new" exact render={() => 
+              isAuth && redirect ? <Redirect to="/dashboard" /> 
+              : isAuth ? <AddProject user={user} setRedirect={setRedirect}/> 
+              : <Redirect to="/login"/>
+            }/>
+            {/* <Route path="/projects/new" exact render={() => <AddProject user={user}/>} /> */}
             {/* <Route path="/projects/:id" exact component={Project} /> */}
             <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} />} />
             <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />

@@ -60,7 +60,9 @@ router.post("/new", checkToken, async (req, res) => {
   try {
     // let project = new Project(req.body);
     // await project.save();
-    await Project.create({ title: req.body.title, description: req.body.description, members: req.body.members, createdBy: req.body.createdBy, startDate: req.body.startDate, endDate: req.body.endDate, organization: req.body.organization});
+    console.log('sent info', req.body)
+    let project = await Project.create({ title: req.body.title, description: req.body.description, members: req.body.members, createdBy: req.body.createdBy, startDate: req.body.startDate, endDate: req.body.endDate, organization: req.body.organization});
+    console.log('project', project)
     res.status(201).json({
       message: 'New project created',
     })
@@ -75,7 +77,7 @@ router.post("/new", checkToken, async (req, res) => {
 // Show all user projects
 router.get("/", checkToken, async (req, res) => {
   try {
-    let projects = await Project.find({members:{$in: [req.user.id]}});
+    let projects = await Project.find({members:{$in: [req.user.id]}}).populate('createdBy');
     res.status(200).json({
       count: projects.length,
       projects,

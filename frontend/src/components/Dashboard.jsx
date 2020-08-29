@@ -19,13 +19,14 @@ function Dashboard({ user }) {
     setProjects(result.data.projects)
     setProjectsNum(result.data.count)
    } catch (error) {
+     console.log(error)
      setError(error.response.data.message)
    }
 };
 
 async function deleteProject(e) {
   try {
-    await Axios.delete(`${URL}/items/${e.target.id}`)
+    await Axios.delete(`${URL}/projects/${e.target.id}`)
     getUserProjects()
   } catch (error) {
     setError(error.response.data.message)
@@ -47,7 +48,7 @@ useEffect(() => {
                 <Card>
                   <Card.Body>
                     <b>{project.title}</b>
-                    {project.description}
+                    <p>{project.description}</p>
                       <div>
                         <Link to={`/projects/${project._id}`}>View</Link>
                         {user._id.toString() == project.createdBy._id.toString() && <Button onClick={deleteProject} id={project._id} variant="danger">Delete</Button>}

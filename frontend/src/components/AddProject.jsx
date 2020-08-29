@@ -1,26 +1,29 @@
 import React, {useState, useEffect} from 'react'
 import {Row, Form, Button, Container, Alert} from 'react-bootstrap'
 import Axios from 'axios';
+import { Redirect} from 'react-router-dom'
+
 
 const URL = process.env.REACT_APP_URL
 
-function AddProject({user}) {
+function AddProject({user, setRedirect}) {
   const [error, setError] = useState(null)
   const [users, setUsers] = useState([])
+  // const [members, setMembers] = useState([])
   const [project, setProject] = useState(
       {
         title: '',
         description: '',
         organization: user.organization._id,
-        createdBy: user.id,
-        members: [],
+        createdBy: user._id,
+        members: [user._id],
         startDate: null,
         endDate: null
       }
     )
   
   useEffect(() => {
-        getOrganizationUsers(user.organization._id);
+    getOrganizationUsers(user.organization._id);
   }, [])
 
   async function getOrganizationUsers(id){
@@ -31,25 +34,63 @@ function AddProject({user}) {
       }});
       setUsers(result.data.users)
     } catch (error) {
-      setError(error.response.data.message)
+      console.log(error)
+      // setError(error.response.data.message)
     }
   };
 
   function changeHandler(e){
     setProject({...project, [e.target.name]: e.target.value})
+    console.log('proj val', project)
   }
+
+  // function handleMembersChange(e){
+  //   console.log(members)
+  //   setMembers([...members, e.target.value]);
+  // };
+  function handleInputChange(e){
+    if(e.target.checked){
+        setProject({...project, members: [...project.members, e.target.value]})   
+    }else{
+      let membersList = [...project.members]
+      let index = membersList.indexOf(e.target.value)
+      membersList.splice(index, 1)
+      setProject({...project, members: membersList})  
+    }  
+    console.log('proj val', project)
+}
+
+//   function handleInputChange(e){
+//     if(e.target.checked){
+//         setMembers([...members, e.target.value])   
+//     }else{
+//       let membersList = [...members]
+//       let index = membersList.indexOf(e.target.value)
+//       membersList.splice(index, 1)
+//       setMembers([membersList])
+//     }  
+//     console.log('members', members) 
+// }
 
   async function submitHandler(info){
     try {
       let token = localStorage.getItem('token');
-      setProject({...project, members: project.members.push(user.id)})
+      console.log('front proj', project)
       let result = await Axios.post(`${URL}/projects/new`, info, {headers: {
         "x-auth-token": token,
       }});
+      setRedirect(true)
     } catch (error) {
-      setError(error.response.data.message)
+      console.log(error)
+      // setError(error.response.data.message)
     }
   };
+
+  // if(redirect){
+  //   return  <Redirect to="/dashboard" user={user}/>
+  // }
+
+
   
   return (
     <div>
@@ -64,7 +105,25 @@ function AddProject({user}) {
             <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description"/>
           </Row>
           <Row>
-            <Form.Control name="members"  onChange={changeHandler} />
+              {/* <select onChange={membersChange} name="members" multiple>
+                <option value="">Add members</option>
+                  {users.map((user, i) => (
+                    <option key={i} value={user._id}>{user.firstname} {user.lastname} ({user.email})</option>
+                  ))}
+              </select> */}
+             <Form.Label>Project Members</Form.Label>
+             {users.map((user, i) => (
+                    <div key={i} style={{display: 'block'}}>
+                      <input type="checkbox" name="members" value={user._id} onChange={handleInputChange} />
+                      <label>{user.firstname} {user.lastname} ({user.email})</label>
+                    </div>
+                  ))}
+            
+              {/* <Form.Control as="select" multiple onChange={handleMembersChange} name="members" value={members}>
+              {users.map((user, i) => (
+                    <option key={i} value={user._id}>{user.firstname} {user.lastname} ({user.email})</option>
+                  ))}
+              </Form.Control> */}
           </Row>
           <Row>
             <Form.Control name="startDate" type="date" onChange={changeHandler} />
