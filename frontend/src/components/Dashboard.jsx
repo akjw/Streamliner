@@ -34,12 +34,12 @@ async function deleteProject(e) {
 
 useEffect(() => {
   getUserProjects();
-})
+}, [])
   return (
     <div>
+      {error && <Alert variant="danger">{error}</Alert>}
       <h1>Dashboard</h1>
       <Container fluid>
-      {error && <Alert variant="danger">{error}</Alert>}
           <Row>
             {projectsNum == 0 && <h4>No projects yet</h4>}
             {projects && projects.map(project => (

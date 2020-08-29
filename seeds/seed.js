@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const Organization = require("../models/organization.model");
-const User = require("../models/user.model");
+const bcrypt = require('bcrypt');
+
 
 require("../config/db");
 let db = [
@@ -22,13 +23,17 @@ let db = [
 
 db.forEach((ele, i) => {
   Organization.create({ name: ele.organization }).then((organization) => {
-    let user = { firstname: ele.firstname, lastname: ele.lastname, email: ele.email, password: ele.password, organization: organization._id };
-    User.create(user)
-      .then((e) => {
-        console.log(`${i} entry complete`);
-      })
-      .catch(() => {
-        process.exit(1);
-      });
+    let user = new User({ firstname: ele.firstname, lastname: ele.lastname, email: ele.email, organization: organization._id });
+    bcrypt.hash(ele.password, 10)
+    .then((codedPass) => {
+        user.password = codedPass;
+        User.create(user)
+        .then((e) => {
+          console.log(`${i} entry complete`);
+        })
+        .catch(() => {
+          process.exit(1);
+        });
+    })
   });
 });

@@ -46,6 +46,7 @@ router.post('/register', async (req, res) => {
   @access public
 */
 router.post('/login', async (req, res) => {
+  console.log('sent info', req.body)
   let {email, password } = req.body;
   try {
     //search db for user w matching email
@@ -81,13 +82,14 @@ router.post('/login', async (req, res) => {
 
 router.get('/user', checkToken, async (req, res) => {
   try {
-    let user = await User.findById(req.user.id, "-password");
+    let user = await User.findById(req.user.id, "-password").populate('organization')
+    console.log(user)
     res.status(200).json({
       user,
     })
   } catch (error) {
     res.status(500).json({
-      message: 'cannnot get user info',
+      message: 'Cannnot Get User Info',
     })
   }
 })

@@ -2,10 +2,20 @@ import React, { useState } from 'react'
 import {Row, Form, Button, Container} from 'react-bootstrap'
 
 export default function Login({ loginHandler }){
-  const [loginInfo, setLoginInfo] = useState({email: '', password: ''})
+  const [loginInfo, setLoginInfo] = useState(
+    { email: "",
+      password: ""
+    }
+    )
  
   function changeHandler(e){
-    setLoginInfo({[e.target.name]: e.target.value})
+    console.log(e.target.value)
+    setLoginInfo({...loginInfo, [e.target.name]: e.target.value})
+  }
+
+  function login(){
+    console.log('login info here', loginInfo)
+    loginHandler(loginInfo)
   }
 
     return (
@@ -20,7 +30,7 @@ export default function Login({ loginHandler }){
             <Form.Control name="password" type="password" onChange={changeHandler}/>
           </Row>
           <Row>
-            <Button variant="primary" block onClick={()=> loginHandler(loginInfo)}>Login</Button>
+            <Button variant="primary" block onClick={login}>Login</Button>
           </Row>
           </Container>
         </div>

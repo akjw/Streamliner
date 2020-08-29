@@ -16,7 +16,7 @@ export default function Navigation({user, logoutHandler}) {
         Profile
       </Link>
       <Link className="nav-link" to="/projects/new">
-        Profile
+        New Project
       </Link>
     </Nav>
     <Nav>

@@ -15,10 +15,10 @@ app.use(cors()); //allows all requests from outside servers or apps
 
 
 //=== setup routes
-// app.use('/api/items', require('./routes/item.route'));
 app.use('/api/auth', require('./routes/auth.route'));
 app.use('/api/projects', require('./routes/project.route'));
-
+app.use('/api/organizations', require('./routes/organization.route'));
+app.use('/api/users', require('./routes/user.route'));
 //==== 404 errors
 app.get('*', (req, res) => {
   res.status(404).json({ message: "404: Not Found" , code: 'EB404'})

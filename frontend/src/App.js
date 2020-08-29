@@ -7,6 +7,7 @@ import Navigation from './components/Navigation';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import UserProfile from './components/UserProfile'
+import AddProject from './components/AddProject'
 import {Alert} from 'react-bootstrap'
 import Axios from 'axios';
 import {decode} from 'jsonwebtoken'
@@ -69,6 +70,7 @@ function App() {
     }
   };
 
+
   async function getUserProfile(token){
     try {
        //credentials will be an obj that takes email & password
@@ -83,7 +85,7 @@ function App() {
       setGlobalError(error.response.data.message)
     }
   };
-  console.log(isAuth)
+ 
 
 
   return (
@@ -94,10 +96,10 @@ function App() {
           <Switch>
             <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} />
             <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} /> : <Redirect to="/login"/>}/>
-            <Route exact path="/profile" render={() => isAuth? <UserProfile /> : <Redirect to="/login"/>} /> 
+            <Route exact path="/profile" render={() => isAuth? <UserProfile user={user}/> : <Redirect to="/login"/>} /> 
             {/* <Route exact path="/users/:id" component={User}/> */}
             {/* <Route exact path="/users" component={AllUsers}/> */}
-            {/* <Route path="/projects/add" exact render={() => <AddProject />} /> */}
+            <Route path="/projects/new" exact render={() => <AddProject user={user}/>} />
             {/* <Route path="/projects/:id" exact component={Project} /> */}
             <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} />} />
             <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />
