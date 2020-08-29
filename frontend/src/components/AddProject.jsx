@@ -86,12 +86,6 @@ function AddProject({user, setRedirect}) {
     }
   };
 
-  // if(redirect){
-  //   return  <Redirect to="/dashboard" user={user}/>
-  // }
-
-
-  
   return (
     <div>
        {error && <Alert variant="danger">{error}</Alert>}
@@ -105,25 +99,14 @@ function AddProject({user, setRedirect}) {
             <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description"/>
           </Row>
           <Row>
-              {/* <select onChange={membersChange} name="members" multiple>
-                <option value="">Add members</option>
-                  {users.map((user, i) => (
-                    <option key={i} value={user._id}>{user.firstname} {user.lastname} ({user.email})</option>
-                  ))}
-              </select> */}
              <Form.Label>Project Members</Form.Label>
+             {users.count == 0 && <p>There are no other members in your organization</p>}
              {users.map((user, i) => (
                     <div key={i} style={{display: 'block'}}>
                       <input type="checkbox" name="members" value={user._id} onChange={handleInputChange} />
                       <label>{user.firstname} {user.lastname} ({user.email})</label>
                     </div>
                   ))}
-            
-              {/* <Form.Control as="select" multiple onChange={handleMembersChange} name="members" value={members}>
-              {users.map((user, i) => (
-                    <option key={i} value={user._id}>{user.firstname} {user.lastname} ({user.email})</option>
-                  ))}
-              </Form.Control> */}
           </Row>
           <Row>
             <Form.Control name="startDate" type="date" onChange={changeHandler} />

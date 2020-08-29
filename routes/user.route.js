@@ -10,6 +10,7 @@ router.get("/all/:id", checkToken, async (req, res) => {
   ]});
     res.status(200).json({
       message: 'Users fetched',
+      count: users.length,
       users,
     })
 

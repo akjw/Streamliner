@@ -7,6 +7,7 @@ const URL = process.env.REACT_APP_URL
 
 function Dashboard({ user }) {
  const [projects, setProjects] = useState([])
+ const [isLoading, setIsLoading] = useState(true)
  const [projectsNum, setProjectsNum] = useState(0)
  const [error, setError] = useState(null)
 
@@ -18,6 +19,7 @@ function Dashboard({ user }) {
     }})
     setProjects(result.data.projects)
     setProjectsNum(result.data.count)
+    setIsLoading(false);
    } catch (error) {
      console.log(error)
      setError(error.response.data.message)
@@ -42,7 +44,7 @@ useEffect(() => {
       <h1>Dashboard</h1>
       <Container fluid>
           <Row>
-            {projectsNum == 0 && <h4>No projects yet</h4>}
+            {(!isLoading && projectsNum == 0) && <h4>No projects yet</h4>}
             {projects && projects.map(project => (
               <Col key={project._id} md="3">
                 <Card>
