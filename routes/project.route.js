@@ -58,8 +58,9 @@ router.delete("/:id", async (req, res) => {
 // Create project
 router.post("/new", checkToken, async (req, res) => {
   try {
-    let project = new Project(req.body);
-    await project.save();
+    // let project = new Project(req.body);
+    // await project.save();
+    await Project.create({ title: req.body.title, description: req.body.description, members: req.body.members, postedBy: req.user.id, startDate: req.body.startDate, endDate: req.body.endDate});
     res.status(201).json({
       message: 'New project created',
     })
