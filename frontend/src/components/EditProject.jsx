@@ -17,34 +17,35 @@ function EditProject({user, setRedirect, setRedirectId}) {
   const [error, setError] = useState(null)
   const [users, setUsers] = useState([])
   const [members, setMembers] = useState([])
-  const [project, setProject] = useState(
-      {
-        title: '',
-        description: '',
-        members: [],
-        organization: user.organization._id,
-        createdBy: user._id,
-        startDate: null,
-        endDate: null
-      }
-    )
+  const [project, setProject] = useState({})
   
   useEffect(() => {
     getOrganizationUsers(user.organization._id);
     getProject(id)
   }, [])
 
+  // useEffect(() => {
+  //   setMembers(...members)
+   
+  // }, [project])
+
+
+
+
 
  async function getProject(id){
   try {
    let result = await Axios.get(`${URL}/projects/${id}`)
    let data = result.data.project
-   console.log('axios results', result)
-   setProject({...project, data})
-   console.log('set proj details', project)
-   let checkedMembers = result.data.project.members.map(member => { return member._id})
-   setMembers(checkedMembers)
-   console.log('checked members', checkedMembers)
+  //  console.log('data info', data)
+  //  console.log('axios results', result)
+  //  setProject(data)
+  //  console.log('set proj details', project)
+   let membersAlreadyInProject = result.data.project.members.map(member => { return member._id})
+   setMembers(membersAlreadyInProject)
+   setProject({...data, members: membersAlreadyInProject})
+  
+  //  console.log('checked members', membersAlreadyInProject)
    setIsLoading(false);
   } catch (error) {
     console.log(error)
@@ -59,6 +60,7 @@ function EditProject({user, setRedirect, setRedirectId}) {
         "x-auth-token": token,
       }});
       setUsers(result.data.users)
+      // console.log('all users', users)
     } catch (error) {
       console.log(error)
       // setError(error.response.data.message)
@@ -71,6 +73,7 @@ function EditProject({user, setRedirect, setRedirectId}) {
   }
 
   function handleInputChange(e){
+    console.log(e.target.checked)
     if(e.target.checked){
         setProject({...project, members: [...project.members, e.target.value]})   
     }else{
@@ -79,7 +82,7 @@ function EditProject({user, setRedirect, setRedirectId}) {
       membersList.splice(index, 1)
       setProject({...project, members: membersList})  
     }  
-    console.log('proj val', project)
+    // console.log('proj val', project)
 }
 
 
@@ -87,7 +90,6 @@ function EditProject({user, setRedirect, setRedirectId}) {
     try {
       let token = localStorage.getItem('token');
       setProject({...project, members: [...project.members, user._id]})
-      console.log('front proj', project)
       let result = await Axios.put(`${URL}/projects/${id}`, info, {headers: {
         "x-auth-token": token,
       }});
@@ -115,6 +117,8 @@ function EditProject({user, setRedirect, setRedirectId}) {
     }
   }
 
+
+
   return (
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
@@ -131,13 +135,13 @@ function EditProject({user, setRedirect, setRedirectId}) {
             <Form.Label>Project Members</Form.Label>
              {users.count == 0 && <p>There are no other members in your organization</p>}
           </Row>
-                {users.map((user, i) => (
-                    <Row key={i}>
+                {users.map((user, i) => {
+                    return (<Row key={i}>
                       <Form.Check type='checkbox' name="members"
                     value={user._id}
-                    label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} defaultChecked={members.indexOf(user._id) != 1 ? true : false}/>
-                    </Row>
-                  ))}
+                    label={`${user.firstname} ${user.lastname} (${user.email})`} onClick={handleInputChange} defaultChecked={members.indexOf(user._id.toString()) != -1 ? true : null}/>
+                    </Row>)
+                })}
           {/* <Row>
             <Form.Label>Start Date</Form.Label>
             <DatePicker name="startDate" selected={moment(ogProject.startDate).toDate()} onChange={changeHandler}/>
