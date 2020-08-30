@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Link, useParams} from 'react-router-dom';
 import {Container, Row, Card, Col, Button, Alert} from 'react-bootstrap';
 import Axios from 'axios';
+import moment from 'moment'
 
 const URL = process.env.REACT_APP_URL
 
@@ -36,7 +37,9 @@ async function deleteProject() {
 }
 
 useEffect(() => {
-  getProject(id);
+  if(isLoading){
+    getProject(id);
+  }
 }, [isLoading])
 console.log('members', members)
 console.log('user', user)
@@ -44,13 +47,19 @@ console.log('user', user)
   return (
     <div className="mt-4">
        {error && <Alert variant="danger">{error}</Alert>}
-       <Container fluid className="mt-4">
-          <Row>
+       {!isLoading && <Container fluid className="mt-4">
+       <Row>
               <Col>
               <Card>
                 <Card.Body>
                   <h1>{project && project.title}</h1>
                   <div>{project && project.description}</div>
+                  <div>
+                    <p>Start Date: {moment(project.startDate).format('MMMM Do YYYY')}</p>
+                  </div>
+                  <div>
+                    <p>End Date: {moment(project.endDate).format('MMMM Do YYYY')}</p>
+                  </div>
                   <div>
                     <p>Members</p>
                     {members && members.map((member,i) => (
@@ -70,7 +79,8 @@ console.log('user', user)
           <Row>
             <Link to={`/projects/${id}/phases/new`} className="btn btn-primary">Add Phase</Link>
           </Row>
-        </Container>
+        </Container>}
+       
     </div>
   )
 }

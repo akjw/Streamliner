@@ -26,6 +26,9 @@ export default function Register ({ registerHandler }){
           <Row>
             <Form.Control name="password" type="password" onChange={changeHandler} placeholder="Password"/>
           </Row>
+          {/* <Row>
+            <Form.Select name="organization" value onChange={changeHandler} placeholder="Password"/>
+          </Row> */}
           <Row>
             <Button variant="primary" onClick={()=> registerHandler(userInfo)}>Register</Button>
           </Row>

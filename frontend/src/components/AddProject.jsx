@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import {Row, Form, Button, Container, Alert} from 'react-bootstrap'
 import Axios from 'axios';
-import { Redirect} from 'react-router-dom'
+import DatePicker from "react-datepicker";
+import moment from "moment";
+ 
+import "react-datepicker/dist/react-datepicker.css";
 
 
 const URL = process.env.REACT_APP_URL
@@ -9,7 +12,6 @@ const URL = process.env.REACT_APP_URL
 function AddProject({user, setRedirect}) {
   const [error, setError] = useState(null)
   const [users, setUsers] = useState([])
-  // const [members, setMembers] = useState([])
   const [project, setProject] = useState(
       {
         title: '',
@@ -44,10 +46,16 @@ function AddProject({user, setRedirect}) {
     console.log('proj val', project)
   }
 
-  // function handleMembersChange(e){
-  //   console.log(members)
-  //   setMembers([...members, e.target.value]);
-  // };
+  function handleStartDateChange(date){
+    setProject({...project, startDate: date})
+  }
+
+
+  function handleEndDateChange(date){
+    setProject({...project, endDate: date})
+  }
+
+ 
   function handleInputChange(e){
     if(e.target.checked){
         setProject({...project, members: [...project.members, e.target.value]})   
@@ -59,18 +67,6 @@ function AddProject({user, setRedirect}) {
     }  
     console.log('proj val', project)
 }
-
-//   function handleInputChange(e){
-//     if(e.target.checked){
-//         setMembers([...members, e.target.value])   
-//     }else{
-//       let membersList = [...members]
-//       let index = membersList.indexOf(e.target.value)
-//       membersList.splice(index, 1)
-//       setMembers([membersList])
-//     }  
-//     console.log('members', members) 
-// }
 
   async function submitHandler(info){
     try {
@@ -103,21 +99,25 @@ function AddProject({user, setRedirect}) {
              {users.count == 0 && <p>There are no other members in your organization</p>}
           </Row>
              {users.map((user, i) => (
-                    // <div key={i} style={{display: 'block'}}>
-                    //   <input type="checkbox" name="members" value={user._id} onChange={handleInputChange} />
-                    //   <label>{user.firstname} {user.lastname} ({user.email})</label>
-                    // </div>
                     <Row key={i}>
                       <Form.Check type='checkbox' name="members"
                     value={user._id}
                     label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} multiple/>
                     </Row>
                   ))}
-          <Row>
+          {/* <Row>
             <Form.Control name="startDate" type="date" onChange={changeHandler} />
           </Row>
           <Row>
             <Form.Control name="endDate" type="date" onChange={changeHandler} />
+          </Row> */}
+          <Row>
+            <Form.Label>Start Date</Form.Label>
+            <DatePicker name="startDate" selected={project.startDate != null ? project.startDate : ''} onChange={handleStartDateChange}/>
+          </Row>
+          <Row>
+          <Form.Label>End Date</Form.Label>
+          <DatePicker name="endDate" selected={project.endDate != null ? project.endDate : ''} onChange={handleEndDateChange}/>
           </Row>
           <Row>
             <Button variant="primary" onClick={()=> submitHandler(project)}>Save</Button>
