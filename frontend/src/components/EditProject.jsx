@@ -82,6 +82,7 @@ function EditProject({user, setRedirect, setRedirectId}) {
   function handleEndDateChange(date){
     setProject({...project, endDate: date})
   }
+  
   function handleInputChange(e){
     console.log(e.target.checked)
     if(e.target.checked){

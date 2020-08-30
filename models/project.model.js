@@ -33,6 +33,10 @@ const projectSchema = new mongoose.Schema(
     endDate: {
       type: Date,
       required: true
+    },
+    isComplete: {
+      type: Boolean,
+      default: false,
     }
   }, 
   {timestamps: true}

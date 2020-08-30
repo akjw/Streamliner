@@ -2,14 +2,14 @@ import React, {useState, useEffect} from 'react'
 import {Row, Form, Button, Container, Alert} from 'react-bootstrap'
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
-import moment from "moment";
- 
 import "react-datepicker/dist/react-datepicker.css";
+
 
 
 const URL = process.env.REACT_APP_URL
 
 function AddProject({user, setRedirect}) {
+  let usersList;
   const [error, setError] = useState(null)
   const today = new Date()
   const [users, setUsers] = useState([])
@@ -35,6 +35,13 @@ function AddProject({user, setRedirect}) {
       let result = await Axios.get(`${URL}/users/all/${id}`, {headers: {
         "x-auth-token": token,
       }});
+      // usersList = result.data.users.map(user => {
+      //   return {
+      //     value: user._id,
+      //     label: `${user.firstname} ${user.lastname} (${user.email})`
+      //   }
+      // })
+      console.log('users list', usersList)
       setUsers(result.data.users)
     } catch (error) {
       console.log(error)
@@ -55,6 +62,18 @@ function AddProject({user, setRedirect}) {
   function handleEndDateChange(date){
     setProject({...project, endDate: date})
   }
+
+//   function handleInputChange(e){
+//     let membersList = [...project.members]
+//     let index = membersList.indexOf(e.target.value)
+//     if(index == -1){
+//         setProject({...project, members: [...project.members, e.target.value]})   
+//     }else{
+//       membersList.splice(index, 1)
+//       setProject({...project, members: membersList})  
+//     }  
+//     console.log('proj val', project)
+// }
 
  
   function handleInputChange(e){
@@ -98,7 +117,7 @@ function AddProject({user, setRedirect}) {
           <Row>
             <Form.Label>Project Members</Form.Label>
              {users.count == 0 && <p>There are no other members in your organization</p>}
-             {/* <Form.Control as="select" multiple name="members" onChange={handleInputChange}>
+             {/* <Form.Control as="select" multiple name="members" onClick={handleInputChange} options={users}>
              {users.map((user, i) => (
                     <option key={i} value={user._id}>{`${user.firstname} ${user.lastname} (${user.email})`}</option>
                   ))} 

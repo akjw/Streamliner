@@ -6,7 +6,7 @@ const checkToken = require('../config/config')
 router.get("/:id", async (req, res) => {
   try {
     let project =  
-    await Project.findById(req.params.id).populate('members').populate('createdBy');
+    await (await Project.findById(req.params.id).populate('members').populate('createdBy')).populate('phases');
       res.status(200).json({
         message: 'Project fetched',
         project,
@@ -71,6 +71,23 @@ router.post("/new", checkToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: 'Error: Project could not be created',
+      statuscode: 'EB500'
+    })
+  }
+})
+
+//Creat new phase 
+router.post("/:id/phases/new", checkToken, async (req, res) => {
+  try {
+    let phase = await Phase.create({name: req.body.name, project: req.params.id})
+    let project = await Project.findByIdAndUpdate(req.params.id, {$push: {phases: phase.id}})
+    console.log('phase', phase)
+    res.status(201).json({
+      message: 'New phase created',
+    })
+  } catch (err) {
+    res.status(500).json({
+      message: 'Error: Phase could not be created',
       statuscode: 'EB500'
     })
   }
