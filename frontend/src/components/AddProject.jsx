@@ -20,8 +20,8 @@ function AddProject({user, setRedirect}) {
         organization: user.organization._id,
         createdBy: user._id,
         members: [user._id],
-        startDate: null,
-        endDate: null
+        startDate: today,
+        endDate: today
       }
     )
   

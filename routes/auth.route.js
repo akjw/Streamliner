@@ -11,10 +11,10 @@ const checkToken = require('../config/config');
   @access public
 */
 router.post('/register', async (req, res) => {
-  let {firstname, lastname, email, password } = req.body;
+  let {firstname, lastname, email, password, organization } = req.body;
   try {
     //don't add password to user obj yet
-    let user = new User({firstname, lastname, email});
+    let user = new User({firstname, lastname, email, organization});
     //bcrypt takes in password and salt
     let hashPassword = await bcrypt.hash(password, 10);
     user.password = hashPassword;
