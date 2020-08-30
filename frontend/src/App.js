@@ -11,10 +11,13 @@ import AddProject from './components/AddProject'
 import {Alert, Container} from 'react-bootstrap'
 import Axios from 'axios';
 import {decode} from 'jsonwebtoken'
+import Project from './components/Project'
+import EditProject from './components/EditProject';
 
 const URL = process.env.REACT_APP_URL
 function App() {
   // const [projects, setProjects] = useState([])
+  const [ redirectId, setRedirectId] = useState('')
   const [globalError, setGlobalError] = useState(null)
   const [user, setUser] = useState(null)
   const [isAuth, setIsAuth] = useState(false)
@@ -108,7 +111,8 @@ function App() {
                 : <Redirect to="/login"/>
               }/>
               {/* <Route path="/projects/new" exact render={() => <AddProject user={user}/>} /> */}
-              {/* <Route path="/projects/:id" exact component={Project} /> */}
+              <Route path="/projects/:id/edit" exact render={() => redirect ? <Redirect to={`/projects/${redirectId}`}/> :<EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/>} />
+              <Route path="/projects/:id" exact render={() => <Project user={user}/>} />
               <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} />} />
               <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />
             </Switch>

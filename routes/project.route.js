@@ -5,13 +5,15 @@ const checkToken = require('../config/config')
 // Show one project
 router.get("/:id", async (req, res) => {
   try {
-    let project =  await (await Project.findById(req.params.id)).populate('members').populate('phases');
-    res.status(200).json({
-      message: 'Project fetched',
-      project,
-    })
-
+    let project =  
+    await Project.findById(req.params.id).populate('members').populate('createdBy');
+      res.status(200).json({
+        message: 'Project fetched',
+        project,
+      })
+    
   } catch (err) {
+    console.log(err)
     res.status(500).json({
       message: "Error: Project not found",
       statuscode: 'EB500'
@@ -22,7 +24,7 @@ router.get("/:id", async (req, res) => {
 // Edit project
 router.put("/:id", async (req, res) => {
   try {
-    let project = await Project.findByIdAndUpdate(req.params.id, req.body);
+    let project = await Project.findByIdAndUpdate(req.params.id, {title: req.body.title, description: req.body.description, members: req.body.members, startDate: req.body.startDate, endDate: req.body.endDate,});
     if(project){
       res.status(200).json({
         message: 'Project was successfully updated'

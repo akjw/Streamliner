@@ -22,7 +22,7 @@ function Dashboard({ user }) {
     setIsLoading(false);
    } catch (error) {
      console.log(error)
-     setError(error.response.data.message)
+    //  setError(error.response.data.message)
    }
 };
 
