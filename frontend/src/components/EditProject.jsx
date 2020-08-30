@@ -68,10 +68,20 @@ function EditProject({user, setRedirect, setRedirectId}) {
   };
 
   function changeHandler(e){
+    console.log(e)
+    console.log(e.target.name)
     setProject({...project, [e.target.name]: e.target.value})
     console.log('proj val', project)
   }
 
+  function handleStartDateChange(date){
+    setProject({...project, startDate: date})
+  }
+
+
+  function handleEndDateChange(date){
+    setProject({...project, endDate: date})
+  }
   function handleInputChange(e){
     console.log(e.target.checked)
     if(e.target.checked){
@@ -142,14 +152,14 @@ function EditProject({user, setRedirect, setRedirectId}) {
                     label={`${user.firstname} ${user.lastname} (${user.email})`} onClick={handleInputChange} defaultChecked={members.indexOf(user._id.toString()) != -1 ? true : null}/>
                     </Row>)
                 })}
-          {/* <Row>
+          <Row>
             <Form.Label>Start Date</Form.Label>
-            <DatePicker name="startDate" selected={moment(ogProject.startDate).toDate()} onChange={changeHandler}/>
+            <DatePicker name="startDate" selected={moment(project.startDate).toDate()} onChange={handleStartDateChange}/>
           </Row>
           <Row>
           <Form.Label>End Date</Form.Label>
-          <DatePicker name="endDate" selected={moment(ogProject.endDate).toDate()} onChange={changeHandler}/>
-          </Row> */}
+          <DatePicker name="endDate" selected={moment(project.endDate).toDate()} onChange={handleEndDateChange}/>
+          </Row>
           <Row>
             <Button variant="primary" onClick={()=> submitHandler(project)}>Save</Button>
           </Row>

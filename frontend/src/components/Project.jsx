@@ -38,6 +38,8 @@ async function deleteProject() {
 useEffect(() => {
   getProject(id);
 }, [isLoading])
+console.log('members', members)
+console.log('user', user)
 
   return (
     <div className="mt-4">
@@ -53,18 +55,15 @@ useEffect(() => {
                     <p>Members</p>
                     {members && members.map((member,i) => (
                     <li key={i}>{member.firstname} {member.lastname}
-                      {(members && member._id.toString() == project.createdBy._id.toString()) && <span className="ml-2">(Creator)</span>}
+                      {members && ((member._id.toString() == project.createdBy._id.toString()) && <span className="ml-2">(Creator)</span>)}
                     </li>
                   ))}</div>  
                 </Card.Body>
-                {/* {(project && (user._id.toString() == project.createdBy._id.toString())) && */}
-            
-                      <div> 
-                        <Link to={`/projects/${id}/edit`} className="btn btn-warning">Edit</Link>
-                        <Button onClick={deleteProject} id={id} variant="danger">Delete</Button>
-                      </div> 
-                      {/* } */} 
-                 
+                {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
+                <div> 
+                  <Link to={`/projects/${id}/edit`} className="btn btn-warning">Edit</Link>
+                  <Button onClick={deleteProject} id={id} variant="danger">Delete</Button>
+                </div> : ''}
               </Card>
               </Col>
           </Row>

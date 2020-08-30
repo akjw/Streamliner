@@ -86,12 +86,13 @@ function App() {
       })
       setIsAuth(true);
       setUser(result.data.user)
+      console.log('from get user', result.data.user)
     } catch (error) {
-      setGlobalError(error.response.data.message)
+      // setGlobalError(error.response.data.message)
     }
   };
  
-
+  
 
   return (
       <div className="App">
