@@ -11,6 +11,7 @@ const URL = process.env.REACT_APP_URL
 
 function AddProject({user, setRedirect}) {
   const [error, setError] = useState(null)
+  const today = new Date()
   const [users, setUsers] = useState([])
   const [project, setProject] = useState(
       {
@@ -97,6 +98,11 @@ function AddProject({user, setRedirect}) {
           <Row>
             <Form.Label>Project Members</Form.Label>
              {users.count == 0 && <p>There are no other members in your organization</p>}
+             {/* <Form.Control as="select" multiple name="members" onChange={handleInputChange}>
+             {users.map((user, i) => (
+                    <option key={i} value={user._id}>{`${user.firstname} ${user.lastname} (${user.email})`}</option>
+                  ))} 
+             </Form.Control> */}
           </Row>
              {users.map((user, i) => (
                     <Row key={i}>
@@ -105,19 +111,13 @@ function AddProject({user, setRedirect}) {
                     label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} multiple/>
                     </Row>
                   ))}
-          {/* <Row>
-            <Form.Control name="startDate" type="date" onChange={changeHandler} />
-          </Row>
-          <Row>
-            <Form.Control name="endDate" type="date" onChange={changeHandler} />
-          </Row> */}
           <Row>
             <Form.Label>Start Date</Form.Label>
-            <DatePicker name="startDate" selected={project.startDate != null ? project.startDate : ''} onChange={handleStartDateChange}/>
+            <DatePicker name="startDate" selected={project.startDate != null ? project.startDate : today} onChange={handleStartDateChange}/>
           </Row>
           <Row>
           <Form.Label>End Date</Form.Label>
-          <DatePicker name="endDate" selected={project.endDate != null ? project.endDate : ''} onChange={handleEndDateChange}/>
+          <DatePicker name="endDate" selected={project.endDate != null ? project.endDate : today} onChange={handleEndDateChange}/>
           </Row>
           <Row>
             <Button variant="primary" onClick={()=> submitHandler(project)}>Save</Button>
