@@ -54,7 +54,7 @@ useEffect(() => {
                     <p>{project.description}</p>
                       <div>
                         <Link to={`/projects/${project._id}`}>View</Link>
-                        {user._id.toString() == project.createdBy._id.toString() && <Button onClick={deleteProject} id={project._id} variant="danger">Delete</Button>}
+                        {/* {user._id.toString() == project.createdBy._id.toString() && <Button onClick={deleteProject} id={project._id} variant="danger">Delete</Button>} */}
                       </div>
                   </Card.Body>
                 </Card>
