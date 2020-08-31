@@ -83,7 +83,6 @@ router.post('/login', async (req, res) => {
 router.get('/user', checkToken, async (req, res) => {
   try {
     let user = await User.findById(req.user.id, "-password").populate('organization')
-    console.log(user)
     res.status(200).json({
       user,
     })
