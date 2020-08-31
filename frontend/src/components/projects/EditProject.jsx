@@ -6,46 +6,47 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
  
 import "react-datepicker/dist/react-datepicker.css";
+import EditPhase from '../phases/EditPhase';
 
 
 const URL = process.env.REACT_APP_URL
 
 function EditProject({user, setRedirect, setRedirectId}) {
   const { id } = useParams()
-  let checkedMembers = []
+  let phaseSelect;
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [users, setUsers] = useState([])
   const [members, setMembers] = useState([])
   const [project, setProject] = useState({})
+  const [projectPhases, setProjectPhases] = useState([])
+  const [phasesNum, setPhasesNum] = useState(0)
+  const [phasesLoading, setPhasesLoading] = useState(true)
   
   useEffect(() => {
     getOrganizationUsers(user.organization._id);
-    getProject(id)
+    getProjectPhases(id);
+    getProject(id);
   }, [])
-
-  // useEffect(() => {
-  //   setMembers(...members)
-   
-  // }, [project])
-
-
-
 
 
  async function getProject(id){
   try {
    let result = await Axios.get(`${URL}/projects/${id}`)
    let data = result.data.project
-  //  console.log('data info', data)
-  //  console.log('axios results', result)
-  //  setProject(data)
-  //  console.log('set proj details', project)
    let membersAlreadyInProject = result.data.project.members.map(member => { return member._id})
    setMembers(membersAlreadyInProject)
    setProject({...data, members: membersAlreadyInProject})
-  
-  //  console.log('checked members', membersAlreadyInProject)
+  //  if(projectPhases){
+  //    projectPhases.forEach((phase, i) => {
+  //      console.log('projectPhase', phase)
+  //      console.log('activePhase', project.activePhase._id.toString())
+  //      console.log('equal', phase._id.toString() == project.activePhase._id.toString())
+  //      if(phase._id.toString() == project.activePhase._id.toString()){
+  //        phaseSelect = phase._id.toString();
+  //      }
+  //    })
+  //  }
    setIsLoading(false);
   } catch (error) {
     console.log(error)
@@ -66,6 +67,25 @@ function EditProject({user, setRedirect, setRedirectId}) {
       // setError(error.response.data.message)
     }
   };
+
+
+  async function getProjectPhases(id){
+    try {
+     let token = localStorage.getItem('token');
+     let result = await Axios.get(`${URL}/projects/${id}/phases`, {headers: {
+       "x-auth-token": token,
+     }})
+     console.log('results phases', result)
+     setProjectPhases(result.data.phases)
+     setPhasesNum(result.data.count)
+     setPhasesLoading(false);
+    } catch (error) {
+      if(error.response){
+        setError(error.response.data.message)
+      } 
+      console.log(error)
+    }
+ };
 
   function changeHandler(e){
     console.log(e)
@@ -129,12 +149,14 @@ function EditProject({user, setRedirect, setRedirectId}) {
   }
 
 
-
+console.log('phase select', phaseSelect)
+console.log('project', project)
   return (
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
       <h1>Edit Project</h1>
          <div>
+          {!isLoading && 
           <Container>
           <Row>
             <Form.Control name="title" type="text" onChange={changeHandler} placeholder="Title" defaultValue={project.title}/>
@@ -162,9 +184,39 @@ function EditProject({user, setRedirect, setRedirectId}) {
           <DatePicker name="endDate" selected={moment(project.endDate).toDate()} onChange={handleEndDateChange}/>
           </Row>
           <Row>
+            <Form.Label>Mark as Complete</Form.Label>
+          </Row>
+          <Row>
+            <select onChange={changeHandler} name="isComplete" defaultValue={project.isComplete ? true : false}>
+                    <option value="">Phase</option>
+                    <option value={true}>Yes</option>
+                    <option value={false}>No</option>
+            </select>
+          </Row>
+          <div>
+            <h1>Project Phases</h1>
+              {(!phasesLoading && phasesNum == 0) && <p>No phases in this project yet.</p>}
+              {(!phasesLoading && phasesNum != 0) && 
+              <>
+              <Row>
+                <Form.Label>Set Active Phase</Form.Label>
+              </Row>
+              <Row>
+                <select onChange={changeHandler} name="activePhase" defaultValue={project.activePhase._id ? project.activePhase._id : ''}>
+                  <option value="">Phase</option>
+                {projectPhases.map((phase, i) => {
+                  return <option key={i} value={phase._id}>{phase.name}</option>
+                  })}
+                  </select>
+              </Row>
+              {/* <EditPhase projectPhases={projectPhases} getProjectPhases={getProjectPhases} setError={setError} setPhasesLoading={setPhasesLoading} phasesLoading={phasesLoading}/> */}
+            </>
+            }
+          </div>
+          <Row>
             <Button variant="primary" onClick={()=> submitHandler(project)}>Save</Button>
           </Row>
-          </Container>
+          </Container>}
         </div>
       
     </div>

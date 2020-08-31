@@ -7,12 +7,12 @@ import Navigation from './components/Navigation';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import UserProfile from './components/UserProfile'
-import AddProject from './components/AddProject'
+import AddProject from './components/projects/AddProject'
 import {Alert, Container} from 'react-bootstrap'
 import Axios from 'axios';
 import {decode} from 'jsonwebtoken'
-import Project from './components/Project'
-import EditProject from './components/EditProject';
+import Project from './components/projects/Project'
+import EditProject from './components/projects/EditProject';
 
 const URL = process.env.REACT_APP_URL
 function App() {
