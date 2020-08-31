@@ -36,16 +36,16 @@ export default function Register ({ registerHandler }){
           {!isLoading &&     
           <Container>
           <Row>
-            <Form.Control name="firstname" type="text" onChange={changeHandler} placeholder="First Name"/>
+            <Form.Control name="firstname" type="text" onChange={changeHandler} placeholder="First Name" />
           </Row>
           <Row>
-            <Form.Control name="lastname" type="text" onChange={changeHandler} placeholder="Last Name"/>
+            <Form.Control name="lastname" type="text" onChange={changeHandler} placeholder="Last Name" />
           </Row>
           <Row>
             <Form.Control name="email" type="email" onChange={changeHandler} placeholder="Email"/>
           </Row>
           <Row>
-            <Form.Control name="password" type="password" onChange={changeHandler} placeholder="Password"/>
+            <Form.Control name="password" type="password" onChange={changeHandler} placeholder="Password" />
           </Row>
           <Row>
               <select onChange={changeHandler} name="organization">

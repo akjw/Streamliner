@@ -24,8 +24,8 @@ router.post('/register', async (req, res) => {
       user: {
         //only send id; DO NOT send other user info over
         id: user._id,
-        firstname: user.firstname,
-        lastname: user.lastname
+        // firstname: user.firstname,
+        // lastname: user.lastname
       }
     };
     jwt.sign(payload, "kaja", {expiresIn: 36000000}, (err, token) => {

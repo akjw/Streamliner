@@ -16,6 +16,7 @@ function Project({ user, setRedirect, redirect }) {
  const [isLoading, setIsLoading] = useState(true)
  const [error, setError] = useState(null)
  const [members, setMembers] = useState([])
+//  const [completeDeliverables]
  const [dcount, setDCount] = useState(0)
 
  async function getProject(id){
@@ -24,9 +25,7 @@ function Project({ user, setRedirect, redirect }) {
    setProject(result.data.project)
    setMembers(result.data.project.members)
    setDCount(result.dcount)
-  //  console.log('proj details', project)
    setIsLoading(false);
-  //  console.log('members', members)
   } catch (error) {
     console.log(error)
     // setError(error.response.data.message)
@@ -123,7 +122,6 @@ console.log('rpoj', project)
                         <Accordion.Collapse eventKey={phase._id}>
                           <Card.Body>
                           <h4>{phase.subheader}</h4>
-                            This is a list
                             <div>
                             <Link to={`/phases/${phase._id}/deliverables/new`} className="btn btn-primary">Add {phase.subheader}</Link>
                             </div>
@@ -133,12 +131,15 @@ console.log('rpoj', project)
                                   {(!isLoading && phase.deliverables == undefined) && <h4>No {phase.subheader} yet</h4>}
                                   {(!isLoading && phase.deliverables ) && phase.deliverables.map(d => {
                                     return <Col key={d._id} md="3">
-                                      <Card>
+                                      <Card className={d.isComplete ? 'complete' : '' }>
                                         <Card.Body>
                                           <b>{d.name}</b>
                                           <p>{d.description}</p>
                                           <div>
                                             <p>Deadline: {moment(d.deadline).format('MMMM Do YYYY')}</p>
+                                          </div>
+                                          <div>
+                                            <p>Status: {d.isComplete? 'Complete' : 'In-Progress'}</p>
                                           </div>
                                             <div>
                                               <Link to={`/deliverables/${d._id}`}>Edit</Link>
