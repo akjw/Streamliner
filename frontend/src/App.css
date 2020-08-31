@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.complete {
+  background-color: lightgray;
+  /* text-decoration: line-through; */
+}
+
+.main-theme {
+  background-color: rgb(248, 236, 222);
+  min-height: 100vh;
+}
+
+.wave {
+  min-width: 100vw;
+}

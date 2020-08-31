@@ -39,7 +39,7 @@ function App() {
       }
     }
     setRedirect(false)
-  }, [redirect])
+  }, [redirect, isAuth])
 
   function logoutHandler(e){
     e.preventDefault();
@@ -97,13 +97,14 @@ function App() {
   
 
   return (
-      <div className="App">
+      <div className="App main-theme">
        <Router>
           <Navigation user={user} logoutHandler={logoutHandler}/>
           {globalError && <Alert variant="danger">{globalError}</Alert>}
           <Container>
             <Switch>
-              <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} />
+            <Route exact path="/" exact render={() => <LandingPage />} />
+              {/* <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} /> */}
               <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} /> : <Redirect to="/login"/>}/>
               <Route exact path="/profile" render={() => isAuth? <UserProfile user={user}/> : <Redirect to="/login"/>} /> 
             
@@ -128,8 +129,10 @@ function App() {
               <Route path="/projects/:id/edit" exact render={() => redirect ? <Redirect to={`/projects/${redirectId}`}/> :<EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/>} />
 
               <Route path="/projects/:id" exact render={() => 
-                redirect ? <Redirect to="/dashboard" /> 
-                :<Project user={user} setRedirect={setRedirect}/>} />
+                isAuth && redirect ? <Redirect to="/dashboard" /> 
+                : isAuth ? <Project user={user} setRedirect={setRedirect}/>
+                : <Redirect to="/login"/>
+              }/>
 
               <Route path="/deliverables/:id" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/>
