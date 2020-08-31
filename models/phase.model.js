@@ -6,15 +6,15 @@ const phaseSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    subheader: {
+      type: String,
+      default: 'Deliverables'
+    },
     project: { 
       type: mongoose.Schema.Types.ObjectId,  
       ref: "Project"
     },
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
-    deliverables: [ { 
+    deliverables: [{ 
       type: mongoose.Schema.Types.ObjectId,  
       ref: "Deliverable"
     }]

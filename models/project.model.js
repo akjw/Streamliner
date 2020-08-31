@@ -37,6 +37,10 @@ const projectSchema = new mongoose.Schema(
     isComplete: {
       type: Boolean,
       default: false,
+    },
+    activePhase: { 
+      type: mongoose.Schema.Types.ObjectId,  
+      ref: "Phase"
     }
   }, 
   {timestamps: true}
