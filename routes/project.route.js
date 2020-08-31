@@ -2,8 +2,39 @@ const router = require('express').Router();
 const Project = require('../models/project.model');
 const Phase = require('../models/phase.model')
 const checkToken = require('../config/config')
+// require('dotenv').config()
+
+// const nodemailer = require("nodemailer");
+
+// let transporter = nodemailer.createTransport({
+//   host: 'smtp.gmail.com',
+//   port: 465,
+//   secure: true,
+//   auth: {
+//       type: 'OAuth2',
+//       user: process.env.GMAIL_ADDRESS,
+//       accessToken: process.env.GMAIL_TOKEN
+//   }
+// });
 
 // Show one project
+
+// Show all past user projects
+router.get("/archive", checkToken, async (req, res) => {
+  try {
+    let projects = await Project.find({$and: [{members:{$in: [req.user.id]}}, {isComplete: true}]}).populate('createdBy');
+    res.status(200).json({
+      count: projects.length,
+      projects,
+    })
+  } catch (err) {
+    res.status(500).json({
+      message: 'Error: Could not fetch user projects',
+      statuscode: 'EB500'
+    })
+  }
+})
+
 router.get("/:id", async (req, res) => {
   try {
     let project = await Project.findById(req.params.id).populate('members').populate('createdBy').populate({ 
@@ -30,10 +61,22 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     let project = await Project.findByIdAndUpdate(req.params.id, {title: req.body.title, description: req.body.description, members: req.body.members, startDate: req.body.startDate, endDate: req.body.endDate, activePhase: req.body.activePhase, isComplete: req.body.isComplete});
+    let emailPopulate = Project.find(req.params.id).populate('members')
+    let mailList = emailPopulate.map(member => {
+        return member.email
+    })
     if(project){
       res.status(200).json({
         message: 'Project was successfully updated'
       })
+      // let info = await transporter.sendMail({
+      //   from: process.env.GMAIL_ADDRESS, // sender address
+      //   to: mailList, // list of receivers
+      //   subject: `${project.title} has been updated`, // Subject line
+      //   text: `${project.title} has been updated`, // plain text body
+      //   html: "<b>Hello world?</b>", // html body
+      // });
+      // console.log("Message sent: %s", info.messageId);
     }
   }
   catch(err){
@@ -114,10 +157,10 @@ router.post("/:id/phases/new", checkToken, async (req, res) => {
   }
 })
 
-// Show all user projects
+// Show all current user projects
 router.get("/", checkToken, async (req, res) => {
   try {
-    let projects = await Project.find({members:{$in: [req.user.id]}}).populate('createdBy');
+    let projects = await Project.find({$and: [ {members:{$in: [req.user.id]}}, {isComplete: false}]}).populate('createdBy');
     res.status(200).json({
       count: projects.length,
       projects,
@@ -129,5 +172,7 @@ router.get("/", checkToken, async (req, res) => {
     })
   }
 })
+
+
 
 module.exports = router;
