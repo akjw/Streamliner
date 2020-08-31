@@ -88,8 +88,6 @@ function EditProject({user, setRedirect, setRedirectId}) {
  };
 
   function changeHandler(e){
-    console.log(e)
-    console.log(e.target.name)
     setProject({...project, [e.target.name]: e.target.value})
     console.log('proj val', project)
   }
@@ -115,7 +113,6 @@ function EditProject({user, setRedirect, setRedirectId}) {
     }  
     // console.log('proj val', project)
 }
-
 
   async function submitHandler(info){
     try {
@@ -188,7 +185,6 @@ console.log('project', project)
           </Row>
           <Row>
             <select onChange={changeHandler} name="isComplete" defaultValue={project.isComplete ? true : false}>
-                    <option value="">Phase</option>
                     <option value={true}>Yes</option>
                     <option value={false}>No</option>
             </select>
@@ -202,8 +198,8 @@ console.log('project', project)
                 <Form.Label>Set Active Phase</Form.Label>
               </Row>
               <Row>
-                <select onChange={changeHandler} name="activePhase" defaultValue={project.activePhase._id ? project.activePhase._id : ''}>
-                  <option value="">Phase</option>
+                <select onChange={changeHandler} name="activePhase" defaultValue={project.activePhase ? project.activePhase : ''}>
+                  <option value={undefined}>Phase</option>
                 {projectPhases.map((phase, i) => {
                   return <option key={i} value={phase._id}>{phase.name}</option>
                   })}

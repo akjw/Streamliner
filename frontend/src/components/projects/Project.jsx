@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams, useHistory} from 'react-router-dom';
 import {Container, Row, Card, Col, Button, Alert, Badge} from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion'
 import AddPhase from '../phases/AddPhase'
@@ -8,19 +8,22 @@ import moment from 'moment'
 
 const URL = process.env.REACT_APP_URL
 
-function Project({ user }) {
+function Project({ user, setRedirect, redirect }) {
  const { id } = useParams()
+ let history = useHistory()
  const [showAddPhase, setShowAddPhase] = useState(false)
  const [project, setProject] = useState({})
  const [isLoading, setIsLoading] = useState(true)
  const [error, setError] = useState(null)
  const [members, setMembers] = useState([])
+ const [dcount, setDCount] = useState(0)
 
  async function getProject(id){
   try {
    let result = await Axios.get(`${URL}/projects/${id}`)
    setProject(result.data.project)
    setMembers(result.data.project.members)
+   setDCount(result.dcount)
   //  console.log('proj details', project)
    setIsLoading(false);
   //  console.log('members', members)
@@ -34,8 +37,21 @@ function Project({ user }) {
 async function deleteProject() {
   try {
     await Axios.delete(`${URL}/projects/${id}`)
+    setRedirect(true)
   } catch (error) {
     setError(error.response.data.message)
+  }
+}
+
+async function deletePhase(e) {
+  try {
+    await Axios.delete(`${URL}/phases/${e.target.id}`)
+    getProject(id);
+  } catch (error) {
+   if(error.response){
+     setError(error.response.data.message)
+   } 
+   console.log(error)
   }
 }
 
@@ -43,7 +59,7 @@ useEffect(() => {
   if(isLoading){
     getProject(id);
   }
-}, [isLoading, showAddPhase])
+}, [isLoading, showAddPhase, project, redirect])
 
 console.log('rpoj', project)
   return (
@@ -85,29 +101,60 @@ console.log('rpoj', project)
             <div className="my-2">
             <Button onClick={()=>setShowAddPhase(!showAddPhase)} variant="primary">Add Phase</Button>
             </div>
-            {/* <Link to={`/projects/${id}/phases/new`} className="btn btn-primary">Add Phase</Link> */}
           </Row>
           <Row>
-          {showAddPhase && <AddPhase setShowAddPhase={setShowAddPhase} setError={setError}/>}
+          {showAddPhase && <AddPhase setShowAddPhase={setShowAddPhase} getProject={getProject} setError={setError}/>}
           </Row>
           <Row>
             <Col>
-              <Accordion defaultActiveKey={project.activePhase._id} animation="false">
+              {project.phases.length ?
+                <Accordion defaultActiveKey={project.activePhase ? project.activePhase : project.phases[0]._id}>
                 {project.phases.map((phase, i) => (
                       <Card key={i}>
-                        <Accordion.Toggle as={Card.Header} eventKey={phase._id} animation="false">
+                        <Accordion.Toggle as={Card.Header} eventKey={phase._id}>
                           {phase.name}
-                          {(phase._id.toString() == project.activePhase._id.toString()) && <div><Badge pill variant="success">Active</Badge></div>}
+                          {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <div><Badge pill variant="success">Active</Badge></div>}
+                          {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
+                          <div> 
+                            <Link to={`/phases/${phase._id}`}>Edit</Link>
+                            <Button onClick={deletePhase} id={phase._id} variant="danger">Delete</Button>
+                          </div> : ''}
                         </Accordion.Toggle>
-                        <Accordion.Collapse eventKey={phase._id} animation="false">
+                        <Accordion.Collapse eventKey={phase._id}>
                           <Card.Body>
-                            <h4>Deliverables</h4>
+                          <h4>{phase.subheader}</h4>
                             This is a list
+                            <div>
+                            <Link to={`/phases/${phase._id}/deliverables/new`} className="btn btn-primary">Add {phase.subheader}</Link>
+                            </div>
+
+                                <Container fluid className="mt-4">
+                                <Row>
+                                  {(!isLoading && phase.deliverables == undefined) && <h4>No {phase.subheader} yet</h4>}
+                                  {(!isLoading && phase.deliverables ) && phase.deliverables.map(d => {
+                                    return <Col key={d._id} md="3">
+                                      <Card>
+                                        <Card.Body>
+                                          <b>{d.name}</b>
+                                          <p>{d.description}</p>
+                                          <div>
+                                            <p>Deadline: {moment(d.deadline).format('MMMM Do YYYY')}</p>
+                                          </div>
+                                            <div>
+                                              <Link to={`/deliverables/${d._id}`}>Edit</Link>
+                                              {/* {user._id.toString() == project.createdBy._id.toString() && <Button onClick={deleteProject} id={project._id} variant="danger">Delete</Button>} */}
+                                            </div>
+                                        </Card.Body>
+                                      </Card>
+                                    </Col>
+                                  })}
+                                </Row>
+                              </Container>
                           </Card.Body>
                         </Accordion.Collapse>
                       </Card>
                 ))}
-              </Accordion>
+              </Accordion> : <p>No phases to show</p>}
             </Col>
           </Row>
         </Container>}
