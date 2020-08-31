@@ -5,69 +5,81 @@ import Axios from 'axios';
 
 const URL = process.env.REACT_APP_URL
 
-function EditPhase({projectPhases, setPhasesLoading, phasesLoading, setError, phasesNum, setPhasesNum, getProjectPhases}) {
+function EditPhase({user, setRedirectId, setRedirect}) {
   const { id } = useParams()
   const [phase, setPhase] = useState({})
+  // const [toggleForm, setToggleForm] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // useEffect(() => {
-  //   getProjectPhases(id);
-  // }, [])
-  
+  useEffect(() => {
+    getPhase(id)
+  }, [isLoading])
 
-//   async function getProjectPhases(){
-//     try {
-//      let token = localStorage.getItem('token');
-//      let result = await Axios.get(`${URL}/projects/${id}/phases`, {headers: {
-//        "x-auth-token": token,
-//      }})
-//      setProjectPhases(result.data.projects)
-//      setPhasesNum(result.data.count)
-//      setPhasesLoading(false);
-//     } catch (error) {
-//       if(error.response){
-//         setError(error.response.data.message)
-//       } 
-//       console.log(error)
-//     }
-//  };
+
+  // function toggleEditForm(e){
+  //   setIsLoading(true)
+  //   if(e.target.value == ""){
+  //     return
+  //   }
+  //   console.log("index", e.target.value)
+  //   setPhase(projectPhases[e.target.value])
+  //   console.log('new phase', phase)
+  //   setIsLoading(false)
+  // }
+
+  async function getPhase(id){
+    try {
+      let result = await Axios.get(`${URL}/phases/${id}`)
+      setPhase(result.data.phase)
+      setIsLoading(false);
+     } catch (error) {
+       console.log(error)
+       // setError(error.response.data.message)
+     }
+  }
+
+  function changeHandler(e){
+    setPhase({...phase, [e.target.name]: e.target.value})
+    console.log('phase val', phase)
+  }
 
  async function submitHandler(info){
   try {
     let token = localStorage.getItem('token');
-    setPhase({...phase})
     let result = await Axios.put(`${URL}/phases/${phase._id}`, info, {headers: {
       "x-auth-token": token,
     }});
-    // setToggleEditView(false)
+    setRedirectId(phase.project)
+    setRedirect(true)
   } catch (error) {
     console.log(error)
   }
 };
  
- async function deletePhase(e) {
-   try {
-     await Axios.delete(`${URL}/phases/${e.target.id}`)
-     getProjectPhases()
-   } catch (error) {
-    if(error.response){
-      setError(error.response.data.message)
-    } 
-    console.log(error)
-   }
- }
 
 
   return (
     <div>
-      {!phasesLoading && 
+      {!isLoading && 
         <div>
+            <h2>Edit Phase</h2>
           <Row>
-            <Form.Label>Edit Phase</Form.Label>
+            <Form.Label>Name (e.g. Phase 1: 3 March - 14 April)</Form.Label>
+          </Row>
+          <Row>
+            <Form.Control name="name" type="text" onChange={changeHandler} defaultValue={phase.name}/>
+          </Row>
+          <Row>
+            <Form.Label>Subheader (e.g. Tasks)</Form.Label>
+          </Row>
+          <Row>
+            <Form.Control name="subheader" type="text" onChange={changeHandler} defaultValue={phase.subheader}/>
+          </Row>
+          <Row>
             <Button variant="primary" onClick={()=> submitHandler(phase)}>Save</Button>
           </Row>
         </div>
         }
-      
     </div>
   )
 }

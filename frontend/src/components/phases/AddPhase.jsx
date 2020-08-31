@@ -5,7 +5,7 @@ import Axios from 'axios';
 
 const URL = process.env.REACT_APP_URL
 
-function AddPhase({setShowAddPhase, setError}) {
+function AddPhase({setShowAddPhase, setError, getProject}) {
   // grab project id from url
   const { id } = useParams()
   const [phase, setPhase] = useState({})
@@ -25,6 +25,8 @@ function AddPhase({setShowAddPhase, setError}) {
       }});
       setShowAddPhase(false)
       setError(null)
+      getProject(id)
+
     } catch (error) {
       console.log(error)
       setError(error.response.data.message)
