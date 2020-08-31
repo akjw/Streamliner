@@ -13,10 +13,12 @@ import Axios from 'axios';
 import {decode} from 'jsonwebtoken'
 import Project from './components/projects/Project'
 import EditProject from './components/projects/EditProject';
+import EditPhase from './components/phases/EditPhase';
+import AddDeliverable from './components/deliverables/AddDeliverable';
+import EditDeliverable from './components/deliverables/EditDeliverable';
 
 const URL = process.env.REACT_APP_URL
 function App() {
-  // const [projects, setProjects] = useState([])
   const [ redirectId, setRedirectId] = useState('')
   const [globalError, setGlobalError] = useState(null)
   const [user, setUser] = useState(null)
@@ -104,16 +106,37 @@ function App() {
               <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} />
               <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} /> : <Redirect to="/login"/>}/>
               <Route exact path="/profile" render={() => isAuth? <UserProfile user={user}/> : <Redirect to="/login"/>} /> 
-              {/* <Route exact path="/users/:id" component={User}/> */}
-              {/* <Route exact path="/users" component={AllUsers}/> */}
+            
               <Route path="/projects/new" exact render={() => 
                 isAuth && redirect ? <Redirect to="/dashboard" /> 
                 : isAuth ? <AddProject user={user} setRedirect={setRedirect}/> 
                 : <Redirect to="/login"/>
               }/>
-              {/* <Route path="/projects/new" exact render={() => <AddProject user={user}/>} /> */}
+
+               <Route path="/phases/:id" exact render={() => 
+                redirect ? <Redirect to={`/projects/${redirectId}`}/>
+                : isAuth ? <EditPhase user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/> 
+                : <Redirect to="/login"/>
+              }/>
+
+                <Route path="/phases/:id/deliverables/new" exact render={() => 
+                redirect ? <Redirect to={`/projects/${redirectId}`}/>
+                : isAuth ? <AddDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/> 
+                : <Redirect to="/login"/>
+              }/>
+             
               <Route path="/projects/:id/edit" exact render={() => redirect ? <Redirect to={`/projects/${redirectId}`}/> :<EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/>} />
-              <Route path="/projects/:id" exact render={() => <Project user={user}/>} />
+
+              <Route path="/projects/:id" exact render={() => 
+                redirect ? <Redirect to="/dashboard" /> 
+                :<Project user={user} setRedirect={setRedirect}/>} />
+
+              <Route path="/deliverables/:id" exact render={() => 
+                redirect ? <Redirect to={`/projects/${redirectId}`}/>
+                : isAuth ? <EditDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/> 
+                : <Redirect to="/login"/>
+              }/>
+
               <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} />} />
               <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />
             </Switch>
