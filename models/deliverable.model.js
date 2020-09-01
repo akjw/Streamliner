@@ -28,6 +28,7 @@ const deliverableSchema = new mongoose.Schema(
     },
     deadline: {
       type: Date,
+      required: true,
     },
     logs: [ { 
       type: mongoose.Schema.Types.ObjectId,  

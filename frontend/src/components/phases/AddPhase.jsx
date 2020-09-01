@@ -2,13 +2,14 @@ import React, {useState} from 'react'
 import {Row, Form, Button, Container, Col, InputGroup, FormControl} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
+import moment from 'moment'
 
 const URL = process.env.REACT_APP_URL
 
 function AddPhase({setShowAddPhase, setError, getProject}) {
   // grab project id from url
   const { id } = useParams()
-  const [phase, setPhase] = useState({})
+  const [phase, setPhase] = useState({name: ''})
 
 
   function changeHandler(e){
@@ -18,6 +19,10 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
 
   async function submitHandler(info){
     try {
+      if (info.name.trim() == ""){
+        setError('Name cannot be empty')
+        return
+      } 
       let token = localStorage.getItem('token');
       console.log('frontend phase', phase)
       let result = await Axios.post(`${URL}/projects/${id}/phases/new`, info, {headers: {
@@ -26,7 +31,6 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
       setShowAddPhase(false)
       setError(null)
       getProject(id)
-
     } catch (error) {
       console.log(error)
       setError(error.response.data.message)

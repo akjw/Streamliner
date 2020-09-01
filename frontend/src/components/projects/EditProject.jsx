@@ -116,6 +116,13 @@ function EditProject({user, setRedirect, setRedirectId}) {
 
   async function submitHandler(info){
     try {
+      if (moment(info.endDate).isBefore(info.startDate)){
+        setError('End date must be after start date')
+        return 
+      } else if (info.title.trim() == "" || info.description.trim() == ""){
+        setError('Title and description cannot be empty')
+        return
+      } 
       let token = localStorage.getItem('token');
       setProject({...project, members: [...project.members, user._id]})
       let result = await Axios.put(`${URL}/projects/${id}`, info, {headers: {

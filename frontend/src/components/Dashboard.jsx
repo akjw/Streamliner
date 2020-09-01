@@ -7,6 +7,8 @@ import { EyeOutlined } from '@ant-design/icons';
 import moment from 'moment'
 
 const URL = process.env.REACT_APP_URL
+// const today = new Date()
+const now = moment();
 
 function Dashboard({ user }) {
  const [projects, setProjects] = useState([])
@@ -92,8 +94,9 @@ console.log('archive', archive)
                   className="mt-2 mb-2"
                 >
                   <p>{project.description}</p>
-                  <p><b>Start</b> {moment(project.startDate).format('MMMM Do YYYY')}</p>
-                  <p><b>End</b> {moment(project.endDate).format('MMMM Do YYYY')}</p>
+                  {/* <p><b>Start</b> {moment(project.startDate).format('MMMM Do YYYY')}</p> */}
+                  <p><b>Due {moment(project.endDate).fromNow()}</b></p>
+                  {moment(project.endDate).isBefore(now) && !project.isComplete ? <p className="red"><i>Overdue</i></p> : ''}
                 </Card>
                 {/* <Card>
                   <Card.Body>
@@ -118,8 +121,7 @@ console.log('archive', archive)
                   className="mt-2 mb-2"
                 >
                   <p>{project.description}</p>
-                  <p><b>Start</b> {moment(project.startDate).format('MMMM Do YYYY')}</p>
-                  <p><b>End</b> {moment(project.endDate).format('MMMM Do YYYY')}</p>
+                  <p><b>Due {moment(project.endDate).fromNow()}</b></p>
                 </Card>
                 {/* <Card className={project.isComplete ? 'complete' : '' }>
                   <Card.Body>

@@ -17,6 +17,8 @@ import EditPhase from './components/phases/EditPhase';
 import AddDeliverable from './components/deliverables/AddDeliverable';
 import EditDeliverable from './components/deliverables/EditDeliverable';
 
+const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 const URL = process.env.REACT_APP_URL
 function App() {
   const [ redirectId, setRedirectId] = useState('')
@@ -67,6 +69,19 @@ function App() {
 
   async function registerHandler(credentials){
     try {
+      if(credentials.organization == ''){
+        setGlobalError('Please select organization')
+        return
+      } else if (credentials.firstname.trim() == "" || credentials.lastname.trim() == "" || credentials.email.trim() == "" || credentials.password.trim() == ""){
+        setGlobalError('Fields cannot be empty')
+        return
+      } else if (!emailPattern.test(credentials.email)){
+        setGlobalError('Please enter valid email address')
+        return
+      } else if (credentials.password.length < 6){
+        setGlobalError('Password must be at least 6 characters long')
+        return
+      }
       let result = await Axios.post(`${URL}/auth/register`, credentials);
       localStorage.setItem('token', result.data.token);
       setIsAuth(true);
@@ -140,7 +155,7 @@ function App() {
                 : <Redirect to="/login"/>
               }/>
 
-              <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} />} />
+              <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} setGlobalError={setGlobalError}/>} />
               <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />
             </Switch>
           </Container>

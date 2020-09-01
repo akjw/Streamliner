@@ -1,17 +1,19 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button} from 'react-bootstrap'
+import {Row, Form, Button, Alert} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import moment from 'moment'
+import moment from 'moment';
 
-const URL = process.env.REACT_APP_URL
+const URL = process.env.REACT_APP_URL;
+const now = moment();
 
 function EditDeliverable({user, setRedirectId, setRedirect}) {
   const { id } = useParams()
   const [deliverable, setDeliverable] = useState({})
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     getDeliverable(id)
@@ -42,7 +44,13 @@ function EditDeliverable({user, setRedirectId, setRedirect}) {
 
  async function submitHandler(info){
   try {
-    console.log('info', info)
+    if (info.name.trim() == "" || info.description.trim() == ""){
+      setError('Name and description cannot be empty')
+      return
+    } else if (moment(info.deadline).isBefore(now)){
+      setError('Deadline cannot be in the past')
+      return 
+    } 
     let token = localStorage.getItem('token');
     let result = await Axios.put(`${URL}/deliverables/${id}`, info, {headers: {
       "x-auth-token": token,
@@ -68,6 +76,7 @@ console.log(deliverable)
 
   return (
     <div>
+       {error && <Alert variant="danger">{error}</Alert>}
       {!isLoading && 
         <div>
             <h2>Edit Deliverable</h2>

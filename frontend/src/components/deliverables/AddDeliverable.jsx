@@ -4,15 +4,17 @@ import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment'
 
 const URL = process.env.REACT_APP_URL
+const now = moment();
 
 function AddDeliverable({user, setRedirect, setRedirectId}) {
   // grab project id from url
   const { id } = useParams()
   const today = new Date()
   const [phase, setPhase] = useState({})
-  const [deliverable, setDeliverable] = useState({})
+  const [deliverable, setDeliverable] = useState({name: '', description: ''})
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -45,14 +47,22 @@ function AddDeliverable({user, setRedirect, setRedirectId}) {
   async function submitHandler(info){
     try {
       setDeliverable({...deliverable, createdBy: user._id})
-      let token = localStorage.getItem('token');
-      console.log('frontend deliverable', deliverable)
-      let result = await Axios.post(`${URL}/phases/${id}/deliverables/new`, info, {headers: {
-        "x-auth-token": token,
-      }});
-      setError(null)
-      setRedirectId(phase.project)
-      setRedirect(true)
+     if (info.name.trim() == "" || info.description.trim() == ""){
+        setError('Name and description cannot be empty')
+        return
+      } else if (moment(info.deadline).isBefore(now)){
+        setError('Deadline cannot be in the past')
+        return 
+      } else {
+        let token = localStorage.getItem('token');
+        console.log('frontend deliverable', deliverable)
+        let result = await Axios.post(`${URL}/phases/${id}/deliverables/new`, info, {headers: {
+          "x-auth-token": token,
+        }});
+        setError(null)
+        setRedirectId(phase.project)
+        setRedirect(true)
+      }
     } catch (error) {
       console.log(error)
       setError(error.response.data.message)

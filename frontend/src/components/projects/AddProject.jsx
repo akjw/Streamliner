@@ -3,6 +3,7 @@ import {Row, Form, Button, Container, Alert} from 'react-bootstrap'
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment'
 
 
 
@@ -90,12 +91,20 @@ function AddProject({user, setRedirect}) {
 
   async function submitHandler(info){
     try {
-      let token = localStorage.getItem('token');
-      console.log('front proj', project)
-      let result = await Axios.post(`${URL}/projects/new`, info, {headers: {
-        "x-auth-token": token,
-      }});
-      setRedirect(true)
+      if (moment(info.endDate).isBefore(info.startDate)){
+        setError('End date must be after start date')
+        return 
+      } else if (info.title.trim() == "" || info.description.trim() == ""){
+        setError('Title and description cannot be empty')
+        return
+      } 
+        let token = localStorage.getItem('token');
+        console.log('front proj', project)
+        let result = await Axios.post(`${URL}/projects/new`, info, {headers: {
+          "x-auth-token": token,
+        }});
+        setRedirect(true)
+      
     } catch (error) {
       console.log(error)
       // setError(error.response.data.message)
@@ -103,8 +112,9 @@ function AddProject({user, setRedirect}) {
   };
 
   return (
+    <>
+    {error && <Alert variant="danger">{error}</Alert>}
     <div>
-       {error && <Alert variant="danger">{error}</Alert>}
       <h1>New Project</h1>
          <div>
           <Container>
@@ -145,6 +155,7 @@ function AddProject({user, setRedirect}) {
         </div>
       
     </div>
+    </>
   )
 }
 

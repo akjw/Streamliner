@@ -8,7 +8,7 @@ import AddPhase from '../phases/AddPhase'
 import Axios from 'axios';
 import moment from 'moment'
 const { Panel } = Collapse;
-
+const now = moment();
 const URL = process.env.REACT_APP_URL
 
 function Project({ user, setRedirect, redirect }) {
@@ -158,6 +158,8 @@ console.log('rpoj', project)
                                           <div>
                                             <p>Status: {d.isComplete? 'Complete' : 'In-Progress'}</p>
                                           </div>
+                                          <p><b>Due {moment(d.deadline).fromNow()}</b></p>
+                                          {moment(d.deadline).isBefore(now) && !d.isComplete ? <p className="red"><i>Overdue</i></p> : ''}
                                             <div>
                                               <Link to={`/deliverables/${d._id}`}>Edit</Link>
                                             </div>

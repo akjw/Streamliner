@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button} from 'react-bootstrap'
+import {Row, Form, Button, Alert} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 
@@ -10,6 +10,7 @@ function EditPhase({user, setRedirectId, setRedirect}) {
   const [phase, setPhase] = useState({})
   // const [toggleForm, setToggleForm] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     getPhase(id)
@@ -45,6 +46,14 @@ function EditPhase({user, setRedirectId, setRedirect}) {
 
  async function submitHandler(info){
   try {
+    if (info.name.trim() == ""){
+      setError('Name cannot be empty')
+      return
+    } 
+    else if (info.subheader.trim() == ""){
+      setError('Subheader cannot be empty')
+      return
+    } 
     let token = localStorage.getItem('token');
     let result = await Axios.put(`${URL}/phases/${phase._id}`, info, {headers: {
       "x-auth-token": token,
@@ -60,6 +69,7 @@ function EditPhase({user, setRedirectId, setRedirect}) {
 
   return (
     <div>
+      {error && <Alert variant="danger">{error}</Alert>}
       {!isLoading && 
         <div>
             <h2>Edit Phase</h2>
