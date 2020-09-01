@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function Navigation({user, logoutHandler}) {
   return (
-    <Navbar bg="dark" expand="lg" variant="dark">
+    <Navbar bg="dark" expand="lg" variant="dark" className="nav">
     <Navbar.Brand href="/">Streamliner</Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
