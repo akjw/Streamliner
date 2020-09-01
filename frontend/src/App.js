@@ -16,6 +16,7 @@ import EditProject from './components/projects/EditProject';
 import EditPhase from './components/phases/EditPhase';
 import AddDeliverable from './components/deliverables/AddDeliverable';
 import EditDeliverable from './components/deliverables/EditDeliverable';
+import EditUser from './components/EditUser';
 
 const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -121,7 +122,13 @@ function App() {
             <Route exact path="/" exact render={() => <LandingPage />} />
               {/* <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} /> */}
               <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} /> : <Redirect to="/login"/>}/>
-              <Route exact path="/profile" render={() => isAuth? <UserProfile user={user}/> : <Redirect to="/login"/>} /> 
+              <Route exact path="/profile" render={() => isAuth? <UserProfile user={user} /> : <Redirect to="/login"/>} /> 
+
+              <Route path="/users/edit" exact render={() => 
+                isAuth && redirect ? <Redirect to="/profile" /> 
+                : isAuth ? <EditUser user={user} setRedirect={setRedirect} setGlobalError={setGlobalError}/> 
+                : <Redirect to="/login"/>
+              }/>
             
               <Route path="/projects/new" exact render={() => 
                 isAuth && redirect ? <Redirect to="/dashboard" /> 
@@ -141,7 +148,12 @@ function App() {
                 : <Redirect to="/login"/>
               }/>
              
-              <Route path="/projects/:id/edit" exact render={() => redirect ? <Redirect to={`/projects/${redirectId}`}/> :<EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/>} />
+              <Route path="/projects/:id/edit" exact render={() => 
+                redirect ? <Redirect to={`/projects/${redirectId}`}/> 
+                : isAuth ? <EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/>
+                : <Redirect to="/login"/>
+              }/>
+               
 
               <Route path="/projects/:id" exact render={() => 
                 isAuth && redirect ? <Redirect to="/dashboard" /> 

@@ -41,6 +41,7 @@ export default function Login({ loginHandler }){
                     </InputGroup.Prepend>
                     <FormControl
                       placeholder="********"
+                      type="password"
                       name="password"
                       onChange={changeHandler}
                     />

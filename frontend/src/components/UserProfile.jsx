@@ -1,41 +1,35 @@
 import React, {useState, useEffect} from 'react'
-import {Alert} from 'react-bootstrap'
+import {Alert, Container, Row, Col, InputGroup, FormControl, Button} from 'react-bootstrap'
+import {Link} from 'react-router-dom';
+import { Card, Tooltip, Popconfirm, Collapse } from 'antd';
+import { EditOutlined, DeleteFilled, PlusSquareTwoTone } from '@ant-design/icons';
 import Axios from 'axios';
-
-const URL = process.env.REACT_APP_URL
+import moment from 'moment'
 
 export default function UserProfile({user}) {
-  const [organization, setOrganization] = useState({})
-  const [error, setError] = useState(null)
 
-  // useEffect(() => {
-  //   let mounted = true
-  //   getUserOrganization(user.organization)
-  //   return () => {
-  //     mounted = false
-  //   }
-  // }, [])
-
-  // async function getUserOrganization(id){
-  //   try {
-  //     let token = localStorage.getItem('token');
-  //      //credentials will be an obj that takes email & password
-  //     let result = await Axios.get(`${URL}/organizations/${id}`, {
-  //       headers: {
-  //         "x-auth-token": token
-  //       }
-  //     })
-  //     setOrganization(result.data.organization)
-  //   } catch (error) {
-  //     setError(error.response.data.message)
-  //   }
-  // };
   return (
     <div className="mt-4">
-      {error && <Alert variant="danger">{error}</Alert>}
-      <h1>User Profile</h1>
-        Name: {user.firstname} {user.lastname}<br />
-        Organization: {user.organization.name}
+      <Container>
+        <Row>
+          <Col>
+          <Card extra={<h4> 
+                      <Tooltip title="Edit Profile">
+                        <Link to={`/users/edit`} className="mx-2">
+                          <EditOutlined  />
+                        </Link>
+                      </Tooltip>
+                    </h4>}
+                  className="mt-2 mb-2">
+                  <h1>User Profile</h1>
+                  <p><b>Name:</b> {user.firstname} {user.lastname}</p>
+                  <p><b>Email:</b> {user.email}</p>
+                  <p><b>Organization:</b> {user.organization.name}</p>
+                  <p><b>Account created:</b> {moment(user.createdAt).format('MMMM Do YYYY')}</p>
+                </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   )
 }

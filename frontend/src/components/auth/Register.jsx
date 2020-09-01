@@ -74,6 +74,7 @@ export default function Register ({ registerHandler }){
                     </InputGroup.Prepend>
                     <FormControl
                       placeholder="********"
+                      type="password"
                       name="password"
                       onChange={changeHandler}
                     />
