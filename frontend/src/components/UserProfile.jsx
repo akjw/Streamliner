@@ -31,7 +31,7 @@ export default function UserProfile({user}) {
   //   }
   // };
   return (
-    <div>
+    <div className="mt-4">
       {error && <Alert variant="danger">{error}</Alert>}
       <h1>User Profile</h1>
         Name: {user.firstname} {user.lastname}<br />
