@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Row, Form, Button, Container} from 'react-bootstrap'
+import {Row, Form, Button, Container, Col, InputGroup, FormControl} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 
@@ -34,9 +34,23 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
   };
 
   return (
-    <div>
-      <h1>New Phase</h1>
-         <div>
+    <div className="d-flex justify-content-end">
+    <Row>
+      <Col>
+        <InputGroup className>
+          <InputGroup.Prepend>
+            <InputGroup.Text>New Phase</InputGroup.Text>
+          </InputGroup.Prepend>
+          <FormControl
+            placeholder="Phase 1: Wireframing"
+            name="name"
+            onChange={changeHandler}
+          />
+        </InputGroup>
+        <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(phase)}>Save</Button>
+      </Col>
+      {/* <h1>New Phase</h1> */}
+         {/* <div>
           <Container>
           <Row>
             <Form.Control name="name" type="text" onChange={changeHandler} placeholder="Name"/>
@@ -45,8 +59,9 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
             <Button variant="primary" onClick={()=> submitHandler(phase)}>Save</Button>
           </Row>
           </Container>
-        </div>
-    </div>
+        </div> */}
+    </Row>
+  </div>
   )
 }
 
