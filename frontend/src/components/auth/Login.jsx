@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Row, Form, Button, Container} from 'react-bootstrap'
+import {Row, FormControl, Button, Container, Col, InputGroup} from 'react-bootstrap'
 
 export default function Login({ loginHandler }){
   const [loginInfo, setLoginInfo] = useState(
@@ -20,17 +20,39 @@ export default function Login({ loginHandler }){
 
     return (
       <div>
-        <h1>Login</h1>
         <div>
-          <Container>
+          <Container className="mt-4">
+          <h1>Login</h1>
           <Row>
-            <Form.Control name="email" type="email" onChange={changeHandler} />
+            <Col md="6 offset-3">
+            <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="basic-addon1">Email</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl
+                      placeholder="amylee@email.com"
+                      name="email"
+                      onChange={changeHandler}
+                    />
+              </InputGroup>
+            <InputGroup className>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="basic-addon1">Password</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl
+                      placeholder="********"
+                      name="password"
+                      onChange={changeHandler}
+                    />
+              </InputGroup>
+              <Button variant="primary" className="form-control mt-4" onClick={login}>Login</Button>
+            </Col>
+            {/* <Form.Control name="email" type="email" onChange={changeHandler} />
           </Row>
           <Row>
             <Form.Control name="password" type="password" onChange={changeHandler}/>
           </Row>
-          <Row>
-            <Button variant="primary" block onClick={login}>Login</Button>
+          <Row> */}
           </Row>
           </Container>
         </div>

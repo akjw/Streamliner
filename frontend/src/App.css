@@ -1,3 +1,4 @@
+@import '~antd/dist/antd.css';
 .App {
   text-align: center;
 }
@@ -43,7 +44,8 @@
 }
 
 .main-theme {
-  background-color: rgb(248, 236, 222);
+  /* background-color: rgb(248, 236, 222); */
+  background-color: rgb(188, 230, 243);
   min-height: 100vh;
 }
 

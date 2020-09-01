@@ -1,5 +1,5 @@
 import React, {useState, useEffect}  from 'react'
-import {Row, Form, Button, Container} from 'react-bootstrap'
+import {Row, FormControl, Card, Button, Container, InputGroup, Col} from 'react-bootstrap'
 import Axios from 'axios';
 
 const URL = process.env.REACT_APP_URL
@@ -18,6 +18,7 @@ export default function Register ({ registerHandler }){
 
   function changeHandler(e){
     setUserInfo({...userInfo, [e.target.name]: e.target.value})
+    console.log(userInfo)
   }
 
   async function getOrganizations(){
@@ -31,33 +32,68 @@ export default function Register ({ registerHandler }){
   };
     return (
       <div>
-         <h1>Register</h1>
          <div>
           {!isLoading &&     
-          <Container>
-          <Row>
-            <Form.Control name="firstname" type="text" onChange={changeHandler} placeholder="First Name" />
-          </Row>
-          <Row>
-            <Form.Control name="lastname" type="text" onChange={changeHandler} placeholder="Last Name" />
-          </Row>
-          <Row>
-            <Form.Control name="email" type="email" onChange={changeHandler} placeholder="Email"/>
-          </Row>
-          <Row>
-            <Form.Control name="password" type="password" onChange={changeHandler} placeholder="Password" />
-          </Row>
-          <Row>
-              <select onChange={changeHandler} name="organization">
-                <option value="">Select Organization</option>
-                  {organizations.map((organization, i) => (
+          <Container className="mt-4">
+              <h1>Register</h1>
+            <Row className="h-100">
+              <Col md="6 offset-3" my="auto">
+              <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon1">First Name</InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <FormControl
+                    placeholder="Amy"
+                    name="firstname"
+                    onChange={changeHandler}
+                  />
+            </InputGroup>
+            <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon1">Last Name</InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <FormControl
+                    placeholder="Lee"
+                    name="lastname"
+                    onChange={changeHandler}
+                  />
+            </InputGroup>
+            <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="basic-addon1">Email</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl
+                      placeholder="amylee@email.com"
+                      name="email"
+                      onChange={changeHandler}
+                    />
+              </InputGroup>
+            <InputGroup className>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="basic-addon1">Password</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl
+                      placeholder="********"
+                      name="password"
+                      onChange={changeHandler}
+                    />
+              </InputGroup>
+             <InputGroup className>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text>Organization</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <select
+                      name="organization"
+                      onChange={changeHandler} className="form-control">
+                      <option value="">Select your organization</option>
+                     {organizations.map((organization, i) => (
                     <option key={i} value={organization._id}>{organization.name}</option>
                   ))}
-              </select>
-          </Row>
-          <Row>
-            <Button variant="primary" onClick={()=> registerHandler(userInfo)}>Register</Button>
-          </Row>
+                    </select>
+              </InputGroup>
+            <Button variant="primary" className="form-control mt-4" onClick={()=> registerHandler(userInfo)}>Submit</Button>
+              </Col>
+            </Row>
           </Container>}
         </div>
       </div>
