@@ -117,13 +117,15 @@ console.log('rpoj', project)
                           <h4>{phase.name}
                           {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <Badge pill variant="primary" className="mx-2">Active</Badge>}
                           </h4>
-                          {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
+                          {/* {user ? (project && (user._id.toString() == project.createdBy._id.toString())) && */}
                           <h4> 
                             <Tooltip title={`New ${phase.subheader}`}>
                             <Link to={`/phases/${phase._id}/deliverables/new`}>
                                 <PlusSquareTwoTone className="mx-2"/>
                             </Link>
                           </Tooltip>
+                          {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
+                          <>
                           <Tooltip title="Edit Phase">
                             <Link to={`/phases/${phase._id}`} className="mx-2"><EditOutlined  /></Link>
                           </Tooltip>
@@ -137,7 +139,9 @@ console.log('rpoj', project)
                               >
                                <DeleteFilled id={id} className="mx-2"/>
                           </Popconfirm>
-                          </h4>: ''}
+                          </>
+                         : ''}
+                         </h4>
                           </div>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey={phase._id}>
