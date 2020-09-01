@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Alert} from 'react-bootstrap'
+import {Row, Form, Button, Alert, Col, InputGroup, FormControl} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 
@@ -15,18 +15,6 @@ function EditPhase({user, setRedirectId, setRedirect}) {
   useEffect(() => {
     getPhase(id)
   }, [isLoading])
-
-
-  // function toggleEditForm(e){
-  //   setIsLoading(true)
-  //   if(e.target.value == ""){
-  //     return
-  //   }
-  //   console.log("index", e.target.value)
-  //   setPhase(projectPhases[e.target.value])
-  //   console.log('new phase', phase)
-  //   setIsLoading(false)
-  // }
 
   async function getPhase(id){
     try {
@@ -68,27 +56,35 @@ function EditPhase({user, setRedirectId, setRedirect}) {
 
 
   return (
-    <div>
+    <div className="mt-4">
       {error && <Alert variant="danger">{error}</Alert>}
+      <h1>Phase Details</h1>
       {!isLoading && 
-        <div>
-            <h2>Edit Phase</h2>
-          <Row>
-            <Form.Label>Name (e.g. Phase 1: 3 March - 14 April)</Form.Label>
-          </Row>
-          <Row>
-            <Form.Control name="name" type="text" onChange={changeHandler} defaultValue={phase.name}/>
-          </Row>
-          <Row>
-            <Form.Label>Subheader (e.g. Tasks)</Form.Label>
-          </Row>
-          <Row>
-            <Form.Control name="subheader" type="text" onChange={changeHandler} defaultValue={phase.subheader}/>
-          </Row>
-          <Row>
-            <Button variant="primary" onClick={()=> submitHandler(phase)}>Save</Button>
-          </Row>
-        </div>
+      <Row>
+        <Col md="6 offset-3">
+        <InputGroup>
+          <InputGroup.Prepend>
+            <InputGroup.Text>Name</InputGroup.Text>
+          </InputGroup.Prepend>
+          <FormControl
+            defaultValue={phase.name}
+            name="name"
+            onChange={changeHandler}
+          />
+        </InputGroup>
+        <InputGroup>
+          <InputGroup.Prepend>
+            <InputGroup.Text>Subheader</InputGroup.Text>
+          </InputGroup.Prepend>
+          <FormControl
+            defaultValue={phase.subheader}
+            name="subheader"
+            onChange={changeHandler}
+          />
+        </InputGroup>
+        <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(phase)}>Save</Button>
+        </Col>
+      </Row>
         }
     </div>
   )

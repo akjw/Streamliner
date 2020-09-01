@@ -41,7 +41,7 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
     <div className="d-flex justify-content-end">
     <Row>
       <Col>
-        <InputGroup className>
+        <InputGroup>
           <InputGroup.Prepend>
             <InputGroup.Text>New Phase</InputGroup.Text>
           </InputGroup.Prepend>

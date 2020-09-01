@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Container, Alert} from 'react-bootstrap'
+import {Row, Form, Button, Container, Alert, Col} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
@@ -122,6 +122,9 @@ function EditProject({user, setRedirect, setRedirectId}) {
       } else if (info.title.trim() == "" || info.description.trim() == ""){
         setError('Title and description cannot be empty')
         return
+      }  else if (info.activePhase == undefined ){
+        setError("Please mark project's current phase")
+        return
       } 
       let token = localStorage.getItem('token');
       setProject({...project, members: [...project.members, user._id]})
@@ -152,73 +155,71 @@ function EditProject({user, setRedirect, setRedirectId}) {
     }
   }
 
-
-console.log('phase select', phaseSelect)
-console.log('project', project)
   return (
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
-      <h1>Edit Project</h1>
          <div>
           {!isLoading && 
           <Container>
-          <Row>
-            <Form.Control name="title" type="text" onChange={changeHandler} placeholder="Title" defaultValue={project.title}/>
-          </Row>
-          <Row>
-            <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description" defaultValue={project.description}/>
-          </Row>
-          <Row>
-            <Form.Label>Project Members</Form.Label>
-             {users.count == 0 && <p>There are no other members in your organization</p>}
-          </Row>
-                {users.map((user, i) => {
-                    return (<Row key={i}>
-                      <Form.Check type='checkbox' name="members"
-                    value={user._id}
-                    label={`${user.firstname} ${user.lastname} (${user.email})`} onClick={handleInputChange} defaultChecked={members.indexOf(user._id.toString()) != -1 ? true : null}/>
-                    </Row>)
-                })}
-          <Row>
-            <Form.Label>Start Date</Form.Label>
-            <DatePicker name="startDate" selected={moment(project.startDate).toDate()} onChange={handleStartDateChange}/>
-          </Row>
-          <Row>
-          <Form.Label>End Date</Form.Label>
-          <DatePicker name="endDate" selected={moment(project.endDate).toDate()} onChange={handleEndDateChange}/>
-          </Row>
-          <Row>
-            <Form.Label>Mark as Complete</Form.Label>
-          </Row>
-          <Row>
-            <select onChange={changeHandler} name="isComplete" defaultValue={project.isComplete ? true : false}>
-                    <option value={true}>Yes</option>
-                    <option value={false}>No</option>
-            </select>
-          </Row>
-          <div>
-            <h1>Project Phases</h1>
-              {(!phasesLoading && phasesNum == 0) && <p>No phases in this project yet.</p>}
-              {(!phasesLoading && phasesNum != 0) && 
-              <>
+              <h1>Edit Project</h1>
               <Row>
-                <Form.Label>Set Active Phase</Form.Label>
+                <Col md="6 offset-3">
+                <Row>
+                    <Form.Control name="title" type="text" onChange={changeHandler} placeholder="Title" defaultValue={project.title}/>
+                  </Row>
+                  <Row>
+                    <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description" defaultValue={project.description}/>
+                  </Row>
+                  <Row>
+                    <Form.Label>Project Members</Form.Label>
+                    {users.count == 0 && <p>There are no other members in your organization</p>}
+                  </Row>
+                        {users.map((user, i) => {
+                            return (<Row key={i}>
+                              <Form.Check type='checkbox' name="members"
+                            value={user._id}
+                            label={`${user.firstname} ${user.lastname} (${user.email})`} onClick={handleInputChange} defaultChecked={members.indexOf(user._id.toString()) != -1 ? true : null}/>
+                            </Row>)
+                        })}
+                  <Row>
+                    <Form.Label>Start Date</Form.Label>
+                    <DatePicker name="startDate" selected={moment(project.startDate).toDate()} onChange={handleStartDateChange} className="form-control"/>
+                  </Row>
+                  <Row>
+                  <Form.Label>End Date</Form.Label>
+                  <DatePicker name="endDate" selected={moment(project.endDate).toDate()} onChange={handleEndDateChange} className="form-control"/>
+                  </Row>
+                  <Row>
+                    <Form.Label>Mark as Complete</Form.Label>
+                  </Row>
+                  <Row>
+                    <select onChange={changeHandler} name="isComplete" defaultValue={project.isComplete ? true : false} className="form-control">
+                            <option value={true}>Yes</option>
+                            <option value={false}>No</option>
+                    </select>
+                  </Row>
+                  <div>
+                      {(!phasesLoading && phasesNum != 0) && 
+                      <>
+                      <Row>
+                        <Form.Label>Set Active Phase</Form.Label>
+                      </Row>
+                      <Row>
+                        <select onChange={changeHandler} name="activePhase" defaultValue={project.activePhase ? project.activePhase : ''} className="form-control">
+                          <option value={""}>Phase</option>
+                        {projectPhases.map((phase, i) => {
+                          return <option key={i} value={phase._id}>{phase.name}</option>
+                          })}
+                          </select>
+                      </Row>
+                    </>
+                    }
+                  </div>
+                  <Row>
+                    <Button variant="primary" onClick={()=> submitHandler(project)} className="form-control mt-4">Save</Button>
+                  </Row>
+                </Col>
               </Row>
-              <Row>
-                <select onChange={changeHandler} name="activePhase" defaultValue={project.activePhase ? project.activePhase : ''}>
-                  <option value={undefined}>Phase</option>
-                {projectPhases.map((phase, i) => {
-                  return <option key={i} value={phase._id}>{phase.name}</option>
-                  })}
-                  </select>
-              </Row>
-              {/* <EditPhase projectPhases={projectPhases} getProjectPhases={getProjectPhases} setError={setError} setPhasesLoading={setPhasesLoading} phasesLoading={phasesLoading}/> */}
-            </>
-            }
-          </div>
-          <Row>
-            <Button variant="primary" onClick={()=> submitHandler(project)}>Save</Button>
-          </Row>
           </Container>}
         </div>
       
