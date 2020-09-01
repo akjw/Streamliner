@@ -88,7 +88,7 @@ console.log('archive', archive)
               <Col key={project._id} md="3">
                 <Card
                   title={project.title}
-                  extra={ <Link to={`/projects/${project._id}`}><EyeOutlined /></Link>}
+                  extra={ <h4><Link to={`/projects/${project._id}`}><EyeOutlined /></Link></h4>}
                   className="mt-2 mb-2"
                 >
                   <p>{project.description}</p>

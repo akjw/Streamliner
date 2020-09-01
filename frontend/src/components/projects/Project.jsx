@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useParams, useHistory} from 'react-router-dom';
-import {Container, Row, Card, Col, Button, Alert, Badge} from 'react-bootstrap';
+import {Container, Row, Col, Button, Alert, Badge, Card} from 'react-bootstrap';
+import { Card as AnCard, Tooltip, Popconfirm, Collapse } from 'antd';
+import { EditOutlined, DeleteFilled, PlusSquareTwoTone } from '@ant-design/icons';
 import Accordion from 'react-bootstrap/Accordion'
 import AddPhase from '../phases/AddPhase'
 import Axios from 'axios';
 import moment from 'moment'
+const { Panel } = Collapse;
 
 const URL = process.env.REACT_APP_URL
 
@@ -54,6 +57,10 @@ async function deletePhase(e) {
   }
 }
 
+function cancel(){
+  console.log('cancelled!')
+}
+
 useEffect(() => {
   if(isLoading){
     getProject(id);
@@ -67,68 +74,78 @@ console.log('rpoj', project)
        {!isLoading && <Container fluid className="mt-4">
        <Row>
               <Col>
-              <Card>
-                <Card.Body>
-                  <h1>{project && project.title}</h1>
-                  <div>{project && project.description}</div>
-                  <div>
-                    <p>Start Date: {moment(project.startDate).format('MMMM Do YYYY')}</p>
-                  </div>
-                  <div>
-                    <p>End Date: {moment(project.endDate).format('MMMM Do YYYY')}</p>
-                  </div>
-                  <div>
-                    <p>Members</p>
-                    {members && members.map((member,i) => (
-                    <li key={i}>{member.firstname} {member.lastname}
-                      {members && ((member._id.toString() == project.createdBy._id.toString()) && <span className="ml-2">(Creator)</span>)}
-                    </li>
-                  ))}</div> 
-                   <div>
-                    <p>Status: {project.isComplete ? 'Completed' : 'In-Progress'}</p>
-                  </div> 
-                </Card.Body>
-                {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
-                <div> 
-                  <Link to={`/projects/${id}/edit`} className="btn btn-warning">Edit</Link>
-                  <Button onClick={deleteProject} id={id} variant="danger">Delete</Button>
-                </div> : ''}
-              </Card>
+              <AnCard
+                  extra={user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
+                    <h4> 
+                       <Tooltip title="New Project Phase">
+                        <PlusSquareTwoTone className="mx-2" onClick={()=>setShowAddPhase(!showAddPhase)} />
+                      </Tooltip>
+                      <Tooltip title="Edit Project">
+                        <Link to={`/projects/${id}/edit`} className="mx-2"><EditOutlined  /></Link>
+                      </Tooltip>
+                      <Popconfirm
+                            title="Are you sure you want to delete this project?"
+                            onConfirm={deleteProject}
+                            onCancel={cancel}
+                            id={id}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+                           <DeleteFilled id={id} className="mx-2"/>
+                      </Popconfirm>
+                    </h4> : ''}
+                  className="mt-2 mb-2"
+                >
+                  {showAddPhase && <AddPhase setShowAddPhase={setShowAddPhase} getProject={getProject} setError={setError}/>}
+                  <h1>{project.title}</h1>
+                  <p>{project.description}</p>
+                  <p><b>Start</b> {moment(project.startDate).format('MMMM Do YYYY')}</p>
+                  <p><b>End</b> {moment(project.endDate).format('MMMM Do YYYY')}</p>
+                </AnCard>
               </Col>
           </Row>
           <Row>
-            <div className="my-2">
-            <Button onClick={()=>setShowAddPhase(!showAddPhase)} variant="primary">Add Phase</Button>
-            </div>
           </Row>
-          <Row>
-          {showAddPhase && <AddPhase setShowAddPhase={setShowAddPhase} getProject={getProject} setError={setError}/>}
-          </Row>
-          <Row>
+          <Row className="mt-4">
             <Col>
-              {project.phases.length ?
+                 {project.phases.length ?
                 <Accordion defaultActiveKey={project.activePhase ? project.activePhase : project.phases[0]._id}>
                 {project.phases.map((phase, i) => (
                       <Card key={i}>
-                        <Accordion.Toggle as={Card.Header} eventKey={phase._id}>
-                          {phase.name}
-                          {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <div><Badge pill variant="success">Active</Badge></div>}
+                        <Accordion.Toggle as={Card.Header} eventKey={phase._id} className="accordion-theme">
+                        <div className="d-flex justify-content-between">
+                          <h4>{phase.name}
+                          {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <Badge pill variant="primary" className="mx-2">Active</Badge>}
+                          </h4>
                           {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
-                          <div> 
-                            <Link to={`/phases/${phase._id}`}>Edit</Link>
-                            <Button onClick={deletePhase} id={phase._id} variant="danger">Delete</Button>
-                          </div> : ''}
+                          <h4> 
+                            <Tooltip title={`New ${phase.subheader}`}>
+                            <Link to={`/phases/${phase._id}/deliverables/new`}>
+                                <PlusSquareTwoTone className="mx-2"/>
+                            </Link>
+                          </Tooltip>
+                          <Tooltip title="Edit Phase">
+                            <Link to={`/phases/${phase._id}`} className="mx-2"><EditOutlined  /></Link>
+                          </Tooltip>
+                          <Popconfirm
+                                title="Are you sure you want to delete this phase?"
+                                onConfirm={deletePhase}
+                                onCancel={cancel}
+                                id={phase._id}
+                                okText="Yes"
+                                cancelText="No"
+                              >
+                               <DeleteFilled id={id} className="mx-2"/>
+                          </Popconfirm>
+                          </h4>: ''}
+                          </div>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey={phase._id}>
                           <Card.Body>
                           <h4>{phase.subheader}</h4>
-                            <div>
-                            <Link to={`/phases/${phase._id}/deliverables/new`} className="btn btn-primary">Add {phase.subheader}</Link>
-                            </div>
-
                                 <Container fluid className="mt-4">
                                 <Row>
-                                  {(!isLoading && phase.deliverables == undefined) && <h4>No {phase.subheader} yet</h4>}
+                                  {(!isLoading && !phase.deliverables.length) && <p>No {phase.subheader} yet</p>}
                                   {(!isLoading && phase.deliverables ) && phase.deliverables.map(d => {
                                     return <Col key={d._id} md="3">
                                       <Card className={d.isComplete ? 'complete' : '' }>
@@ -143,7 +160,6 @@ console.log('rpoj', project)
                                           </div>
                                             <div>
                                               <Link to={`/deliverables/${d._id}`}>Edit</Link>
-                                              {/* {user._id.toString() == project.createdBy._id.toString() && <Button onClick={deleteProject} id={project._id} variant="danger">Delete</Button>} */}
                                             </div>
                                         </Card.Body>
                                       </Card>
@@ -155,7 +171,8 @@ console.log('rpoj', project)
                         </Accordion.Collapse>
                       </Card>
                 ))}
-              </Accordion> : <p>No phases to show</p>}
+              </Accordion> 
+              : <p>No phases to show</p>}
             </Col>
           </Row>
         </Container>}
