@@ -81,6 +81,7 @@ console.log('rpoj', project)
     <div className="mt-4">
        {error && <Alert variant="danger">{error}</Alert>}
        {!isLoading && 
+       <Container>
        <Container fluid className="mt-4">
        <Row>
               <Col>
@@ -134,7 +135,7 @@ console.log('rpoj', project)
                         <Accordion.Toggle as={Card.Header} eventKey={phase._id} className="accordion-theme">
                         <div className="d-flex justify-content-between">
                           <h4>{phase.name}
-                          {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <Badge pill variant="primary" className="mx-2">Active</Badge>}
+                          {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <Badge pill variant="primary" className="mx-2 purple">Active</Badge>}
                           </h4>
                           <h4> 
                             <Tooltip title={`New ${phase.subheader}`}>
@@ -201,6 +202,7 @@ console.log('rpoj', project)
               : <p>No phases to show</p>}
             </Col>
           </Row>
+          </Container>
         </Container>}
     </div>
   )

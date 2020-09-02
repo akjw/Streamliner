@@ -20,7 +20,7 @@ useEffect(() => {
           <div className="row mt-4">
             <div className="col mt-4">
                <p className="landing-header mt-6">We keep things smooth.</p>
-               <p className="landing-text">Manage all your projects at every stage — right here.</p>
+               <p className="landing-text">Manage your projects at every stage — right here.</p>
                <Link to="/register" className="btn btn-outline-light btn-lg nav-landing">
                   Sign up
                 </Link>

@@ -76,12 +76,13 @@ console.log('archive', archive)
   return (
     <div className="mt-4">
       {error && <Alert variant="danger">{error}</Alert>}
+      <Container>
       <Container fluid className="mt-4">
       {showCurrent ? <h1>Projects</h1> : <h1>Archive</h1>}
           <div className="d-flex justify-content-end">
             <div className="row">
               <div className="col">
-              <Switch className="purple" checkedChildren="Current" unCheckedChildren="Archived" defaultChecked onClick={toggleProjects}/>
+              <Switch className="purple mb-4" checkedChildren="Current" unCheckedChildren="Archived" defaultChecked onClick={toggleProjects}/>
               </div>
             </div>
           </div>
@@ -113,7 +114,7 @@ console.log('archive', archive)
               <Col key={project._id} md="3">
                 <Card
                   title={project.title}
-                  extra={ <Link to={`/projects/${project._id}`}><EyeOutlined /></Link>}
+                  extra={ <h4><Link to={`/projects/${project._id}`}><EyeOutlined className="purple-outline"/></Link></h4>}
                   className="mt-2 mb-2"
                 >
                   <p>{project.description}</p>
@@ -123,6 +124,7 @@ console.log('archive', archive)
             ))}
           </Row>}
         </Container>
+       </Container>
     </div>
   )
 }
