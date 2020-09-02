@@ -2,20 +2,9 @@ const router = require('express').Router();
 const Project = require('../models/project.model');
 const Phase = require('../models/phase.model')
 const checkToken = require('../config/config')
-// require('dotenv').config()
+const sendMail = require('./mail')
+const URL = process.env.APP_URL
 
-// const nodemailer = require("nodemailer");
-
-// let transporter = nodemailer.createTransport({
-//   host: 'smtp.gmail.com',
-//   port: 465,
-//   secure: true,
-//   auth: {
-//       type: 'OAuth2',
-//       user: process.env.GMAIL_ADDRESS,
-//       accessToken: process.env.GMAIL_TOKEN
-//   }
-// });
 
 // Show one project
 
@@ -60,25 +49,31 @@ router.get("/:id", async (req, res) => {
 // Edit project
 router.put("/:id", checkToken, async (req, res) => {
   try {
+  
     let members = [...req.body.members]
     let newList = members.concat(req.user.id)
     let project = await Project.findByIdAndUpdate(req.params.id, {title: req.body.title, description: req.body.description, members: newList, startDate: req.body.startDate, endDate: req.body.endDate, activePhase: req.body.activePhase, isComplete: req.body.isComplete});
-    let emailPopulate = Project.find(req.params.id).populate('members')
-    let mailList = emailPopulate.map(member => {
-        return member.email
-    })
+  
+    let emailPopulate = await Project.findById(req.params.id).populate('members')
+  
+    let mailList = emailPopulate.members.map(member => member.email)
+   
+    let subject = `${project.title} was updated`
+    let text = `Visit your project page to view the latest changes.`
+
+    let html = `<h1>One of your projects has been updated.</h1><p>Visit your <a href='${URL}/projects/${project._id}'>project page</a> to view the latest changes.</p>`
+
     if(project){
+      sendMail(mailList, subject, text, html, function(err, data){
+        if(err){
+          console.log('mail error', err)
+        } else {
+          console.log('mail sent')
+        }
+      })
       res.status(200).json({
         message: 'Project was successfully updated'
       })
-      // let info = await transporter.sendMail({
-      //   from: process.env.GMAIL_ADDRESS, // sender address
-      //   to: mailList, // list of receivers
-      //   subject: `${project.title} has been updated`, // Subject line
-      //   text: `${project.title} has been updated`, // plain text body
-      //   html: "<b>Hello world?</b>", // html body
-      // });
-      // console.log("Message sent: %s", info.messageId);
     }
   }
   catch(err){
@@ -114,6 +109,25 @@ router.post("/new", checkToken, async (req, res) => {
     let newList = members.concat(req.user.id)
     console.log('new list', newList)
     let project = await Project.create({ title: req.body.title, description: req.body.description, members: newList, createdBy: req.body.createdBy, startDate: req.body.startDate, endDate: req.body.endDate, organization: req.body.organization});
+
+
+    let emailPopulate = await Project.findById(project._id).populate('members')
+  
+    let mailList = emailPopulate.members.map(member => member.email)
+   
+    let subject = `You have been added to a new project: ${project.title}`
+    let text = `Visit your project page to view the latest changes.`
+
+    let html = `<h1>You've been added to a new project on Streamliner! </h1><p>Visit your <a href='${URL}/projects/${project._id}'>project page</a> for more details.</p>`
+
+    sendMail(mailList, subject, text, html, function(err, data){
+      if(err){
+        console.log('mail error', err)
+      } else {
+        console.log('mail sent')
+      }
+    })
+
     res.status(201).json({
       message: 'New project created',
     })
