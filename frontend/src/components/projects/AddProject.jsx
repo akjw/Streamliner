@@ -142,14 +142,6 @@ function AddProject({user, setRedirect, setGlobalError}) {
             <Form.Label>Project Members</Form.Label>
              {users.count == 0 && <p>There are no other members in your organization</p>}
           </Row>
-             {/* {users.map((user, i) => (
-                    <Row key={i}>
-                      <Form.Check type='checkbox' name="members"
-                    value={user._id}
-                    label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} multiple/>
-                    </Row>
-                  ))} */}
-
                 <Select
                   name="members"
                   mode="multiple"
@@ -157,6 +149,8 @@ function AddProject({user, setRedirect, setGlobalError}) {
                   placeholder="Add members to project"
                   onChange={handleMembers}
                   optionLabelProp="label"
+                  size="large"
+                  className="pr-2"
                 >
                      {users.map((user, i) => (
                       <Option key={i}   value={user._id} label={`${user.firstname} ${user.lastname} (${user.email})`}>

@@ -163,13 +163,6 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
                         <Form.Label>Project Members</Form.Label>
                         {users.count == 0 && <p>There are no other members in your organization</p>}
                     </Row>
-                        {/* {users.map((user, i) => {
-                            return (<Row key={i}>
-                              <Form.Check type='checkbox' name="members" 
-                            value={user._id}
-                            label={`${user.firstname} ${user.lastname} (${user.email})`} onClick={handleInputChange} defaultChecked={members.indexOf(user._id.toString()) != -1 ? true : null}/>
-                            </Row>)
-                        })} */}
                                     <Select
                             name="members"
                             mode="multiple"
@@ -177,6 +170,7 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
                             defaultValue={project.members}
                             onChange={handleMembers}
                             optionLabelProp="label"
+                            className="form-control"
                           >
                                 {users.map((user, i) => (
                                 <Option key={i}   value={user._id} label={`${user.firstname} ${user.lastname} (${user.email})`}>
