@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Alert} from 'react-bootstrap'
+import {Row, Form, Button, Alert, Col, Card} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import moment from 'moment';
+import moment from 'moment-timezone'
+import { Popconfirm } from 'antd';
+import { DeleteFilled} from '@ant-design/icons';
 
 const URL = process.env.REACT_APP_URL;
 const now = moment();
@@ -62,6 +64,10 @@ function EditDeliverable({user, setRedirectId, setRedirect}) {
   }
 };
 
+function cancel(){
+  console.log('cancelled!')
+}
+
 async function deleteDeliverable(id) {
   try {
     await Axios.delete(`${URL}/deliverables/${id}`)
@@ -78,8 +84,25 @@ console.log(deliverable)
     <div>
        {error && <Alert variant="danger">{error}</Alert>}
       {!isLoading && 
-        <div>
-            <h2>Edit Deliverable</h2>
+        <Card className="my-4 p-4">
+           <div className="d-flex justify-content-end">
+             <h3>
+           <Popconfirm
+                    title="Are you sure you want to delete this?"
+                    onConfirm={()=> deleteDeliverable(id)}
+                    onCancel={cancel}
+                    id={id}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <DeleteFilled id={id} className="mx-2"/>
+              </Popconfirm>
+              </h3>
+           </div>
+        <h1>Edit Information</h1>
+        <Row>
+        <Col md="8 offset-2">
+          <Form>
           <Row>
             <Form.Label>Name</Form.Label>
           </Row>
@@ -96,24 +119,28 @@ console.log(deliverable)
           <Form.Label>Deadline</Form.Label>
           </Row>
           <Row>
-          <DatePicker name="deadline" selected={moment(deliverable.deadline).toDate()} onChange={handleDeadlineChange}/>
+          <DatePicker name="deadline" className="mb-2" selected={moment(deliverable.deadline).toDate()} onChange={handleDeadlineChange}/>
           </Row>
           <Row>
             <Form.Label>Mark as Complete</Form.Label>
           </Row>
           <Row>
-            <select onChange={changeHandler} name="isComplete" defaultValue={deliverable.isComplete ? true : false}>
+            <select onChange={changeHandler} className="form-control" name="isComplete" defaultValue={deliverable.isComplete ? true : false}>
                     <option value={true}>Yes</option>
                     <option value={false}>No</option>
             </select>
           </Row>
           <Row>
-            <Button variant="primary" onClick={()=> submitHandler(deliverable)}>Save</Button>
+            <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
           </Row>
-          <Row className="mt-3">
-            <Button variant="danger" onClick={()=> deleteDeliverable(id)}>Delete</Button>
-          </Row>
-        </div>
+          {/* <Row className="mt-3">
+            <Button variant="danger" className="form-control" onClick={()=> deleteDeliverable(id)}>Delete</Button>
+          </Row> */}
+        </Form>
+        </Col>
+        </Row>
+        </Card>
+       
         }
     </div>
   )

@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Container, Alert} from 'react-bootstrap'
+import {Row, Form, Button, Container, Alert, Col, InputGroup, FormControl, Card} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 const URL = process.env.REACT_APP_URL
-const now = moment();
+const now = moment().format('MM DD YYYY');
 
 function AddDeliverable({user, setRedirect, setRedirectId}) {
   // grab project id from url
@@ -50,10 +50,11 @@ function AddDeliverable({user, setRedirect, setRedirectId}) {
      if (info.name.trim() == "" || info.description.trim() == ""){
         setError('Name and description cannot be empty')
         return
-      } else if (moment(info.deadline).isBefore(now)){
-        setError('Deadline cannot be in the past')
-        return 
-      } else {
+      // } else if (moment(info.deadline).isBefore(now)){
+      //   setError('Deadline cannot be in the past')
+      //   return 
+      // } 
+     } else {
         let token = localStorage.getItem('token');
         console.log('frontend deliverable', deliverable)
         let result = await Axios.post(`${URL}/phases/${id}/deliverables/new`, info, {headers: {
@@ -65,7 +66,7 @@ function AddDeliverable({user, setRedirect, setRedirectId}) {
       }
     } catch (error) {
       console.log(error)
-      setError(error.response.data.message)
+      // setError(error.response.data.message)
     }
   };
 
@@ -74,24 +75,52 @@ function AddDeliverable({user, setRedirect, setRedirectId}) {
   return (
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
-      <h1>New Deliverable</h1>
-         <div>
-          <Container>
+      <Card className="my-4 p-4">
+      <h1>New {phase.subheader}</h1>
+      <Row>
+      <Col md="8 offset-2">
+        <Form>
+        <Form.Group>
           <Row>
-            <Form.Control name="name" type="text" onChange={changeHandler} placeholder="Name"/>
+          <Form.Label>Name</Form.Label>
           </Row>
           <Row>
-            <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description"/>
+          <Form.Control
+            placeholder="Proofread article"
+            name="name"
+            type="text" 
+            onChange={changeHandler}
+          />
+          </Row>
+        </Form.Group>
+        <Form.Group>
+          <Row>
+          <Form.Label>Description</Form.Label>
           </Row>
           <Row>
-          <Form.Label>Deadline</Form.Label>
-          <DatePicker name="deadline" selected={deliverable.deadline != null ? deliverable.deadline : today} onChange={handleDeadlineChange}/>
+          <Form.Control
+            placeholder="Last read-through of Heather Love's article before publication"
+            name="description"
+            type="text" 
+            onChange={changeHandler}
+          />
           </Row>
+        </Form.Group>
+        <Form.Group>
           <Row>
-            <Button variant="primary" onClick={()=> submitHandler(deliverable)}>Save</Button>
-          </Row>
-          </Container>
-        </div>
+        <Form.Label>Deadline</Form.Label>
+        </Row>
+        <Row>
+        <DatePicker name="deadline" selected={deliverable.deadline != null ? deliverable.deadline : today} onChange={handleDeadlineChange}/>
+        </Row>
+        <Row>
+        <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
+        </Row>
+        </Form.Group>
+        </Form>
+      </Col>
+      </Row>
+      </Card>
     </div>
   )
 }
