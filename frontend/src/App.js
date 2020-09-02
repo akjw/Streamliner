@@ -132,38 +132,38 @@ function App() {
             
               <Route path="/projects/new" exact render={() => 
                 isAuth && redirect ? <Redirect to="/dashboard" /> 
-                : isAuth ? <AddProject user={user} setRedirect={setRedirect}/> 
+                : isAuth ? <AddProject user={user} setRedirect={setRedirect} setGlobalError={setGlobalError}/> 
                 : <Redirect to="/login"/>
               }/>
 
                <Route path="/phases/:id" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/>
-                : isAuth ? <EditPhase user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/> 
+                : isAuth ? <EditPhase user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/> 
                 : <Redirect to="/login"/>
               }/>
 
                 <Route path="/phases/:id/deliverables/new" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/>
-                : isAuth ? <AddDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/> 
+                : isAuth ? <AddDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/> 
                 : <Redirect to="/login"/>
               }/>
              
               <Route path="/projects/:id/edit" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/> 
-                : isAuth ? <EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/>
+                : isAuth ? <EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/>
                 : <Redirect to="/login"/>
               }/>
                
 
               <Route path="/projects/:id" exact render={() => 
                 isAuth && redirect ? <Redirect to="/dashboard" /> 
-                : isAuth ? <Project user={user} setRedirect={setRedirect}/>
+                : isAuth ? <Project user={user} setRedirect={setRedirect} setGlobalError={setGlobalError}/>
                 : <Redirect to="/login"/>
               }/>
 
               <Route path="/deliverables/:id" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/>
-                : isAuth ? <EditDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId}/> 
+                : isAuth ? <EditDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/> 
                 : <Redirect to="/login"/>
               }/>
 

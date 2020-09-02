@@ -5,10 +5,9 @@ import Axios from 'axios';
 
 const URL = process.env.REACT_APP_URL
 
-function EditPhase({user, setRedirectId, setRedirect}) {
+function EditPhase({user, setRedirectId, setRedirect, setGlobalError}) {
   const { id } = useParams()
   const [phase, setPhase] = useState({})
-  // const [toggleForm, setToggleForm] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -35,17 +34,18 @@ function EditPhase({user, setRedirectId, setRedirect}) {
  async function submitHandler(info){
   try {
     if (info.name.trim() == ""){
-      setError('Name cannot be empty')
+      setGlobalError('Name cannot be empty')
       return
     } 
     else if (info.subheader.trim() == ""){
-      setError('Subheader cannot be empty')
+      setGlobalError('Subheader cannot be empty')
       return
     } 
     let token = localStorage.getItem('token');
     let result = await Axios.put(`${URL}/phases/${phase._id}`, info, {headers: {
       "x-auth-token": token,
     }});
+    setGlobalError(null)
     setRedirectId(phase.project)
     setRedirect(true)
   } catch (error) {
@@ -82,7 +82,7 @@ function EditPhase({user, setRedirectId, setRedirect}) {
             onChange={changeHandler}
           />
         </InputGroup>
-        <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(phase)}>Save</Button>
+        <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(phase)}>Save</Button>
         </Col>
       </Row>
         }

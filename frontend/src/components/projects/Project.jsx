@@ -12,7 +12,7 @@ const { Panel } = Collapse;
 const now = moment();
 const URL = process.env.REACT_APP_URL
 
-function Project({ user, setRedirect, redirect }) {
+function Project({ user, setRedirect, redirect, setGlobalError }) {
  const { id } = useParams()
  let history = useHistory()
  const [showAddPhase, setShowAddPhase] = useState(false)
@@ -36,6 +36,10 @@ function Project({ user, setRedirect, redirect }) {
   }
 };
 
+function toggleForm(){
+  setShowAddPhase(!showAddPhase)
+  setGlobalError(null)
+}
 
 async function deleteProject() {
   try {
@@ -80,7 +84,7 @@ console.log('rpoj', project)
                   extra={
                     <h4> 
                        <Tooltip title="New Project Phase">
-                        <PlusSquareTwoTone className="mx-2" onClick={()=>setShowAddPhase(!showAddPhase)} />
+                        <PlusSquareTwoTone className="mx-2" onClick={toggleForm} />
                       </Tooltip>
                       {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
                       <>
@@ -99,7 +103,7 @@ console.log('rpoj', project)
                       </Popconfirm>
                       </>
                       : ''}</h4>}>
-                  {showAddPhase && <AddPhase setShowAddPhase={setShowAddPhase} getProject={getProject} setError={setError}/>}
+                  {showAddPhase && <AddPhase setGlobalError={setGlobalError} setShowAddPhase={setShowAddPhase} getProject={getProject} setError={setError}/>}
                   <h1>{project.title}</h1>
                   <p>{project.description}</p>
                   <p><b>Start</b> {moment(project.startDate).format('MMMM Do YYYY')}</p>

@@ -9,7 +9,7 @@ import moment from 'moment-timezone'
 const URL = process.env.REACT_APP_URL
 const now = moment().format('MM DD YYYY');
 
-function AddDeliverable({user, setRedirect, setRedirectId}) {
+function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError}) {
   // grab project id from url
   const { id } = useParams()
   const today = new Date()
@@ -41,26 +41,21 @@ function AddDeliverable({user, setRedirect, setRedirectId}) {
   function changeHandler(e){
     setDeliverable({...deliverable, [e.target.name]: e.target.value})
     console.log('deliverable val', deliverable)
-    console.log(phase.project)
   }
 
   async function submitHandler(info){
     try {
       setDeliverable({...deliverable, createdBy: user._id})
      if (info.name.trim() == "" || info.description.trim() == ""){
-        setError('Name and description cannot be empty')
+        setGlobalError('Name and description cannot be empty')
         return
-      // } else if (moment(info.deadline).isBefore(now)){
-      //   setError('Deadline cannot be in the past')
-      //   return 
-      // } 
      } else {
         let token = localStorage.getItem('token');
         console.log('frontend deliverable', deliverable)
         let result = await Axios.post(`${URL}/phases/${id}/deliverables/new`, info, {headers: {
           "x-auth-token": token,
         }});
-        setError(null)
+        setGlobalError(null)
         setRedirectId(phase.project)
         setRedirect(true)
       }
@@ -75,7 +70,7 @@ function AddDeliverable({user, setRedirect, setRedirectId}) {
   return (
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
-      <Card className="my-4 p-4">
+      <Card className="p-4">
       <h1>New {phase.subheader}</h1>
       <Row>
       <Col md="8 offset-2">
@@ -111,10 +106,10 @@ function AddDeliverable({user, setRedirect, setRedirectId}) {
         <Form.Label>Deadline</Form.Label>
         </Row>
         <Row>
-        <DatePicker name="deadline" selected={deliverable.deadline != null ? deliverable.deadline : today} onChange={handleDeadlineChange}/>
+        <DatePicker name="deadline" selected={deliverable.deadline != null ? deliverable.deadline : today} onChange={handleDeadlineChange} className="form-control"/>
         </Row>
         <Row>
-        <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
+        <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
         </Row>
         </Form.Group>
         </Form>

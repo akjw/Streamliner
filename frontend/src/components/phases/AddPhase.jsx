@@ -6,7 +6,7 @@ import moment from 'moment'
 
 const URL = process.env.REACT_APP_URL
 
-function AddPhase({setShowAddPhase, setError, getProject}) {
+function AddPhase({setShowAddPhase, setError, getProject, setGlobalError}) {
   // grab project id from url
   const { id } = useParams()
   const [phase, setPhase] = useState({name: ''})
@@ -20,7 +20,7 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
   async function submitHandler(info){
     try {
       if (info.name.trim() == ""){
-        setError('Name cannot be empty')
+        setGlobalError('Name cannot be empty')
         return
       } 
       let token = localStorage.getItem('token');
@@ -29,11 +29,11 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
         "x-auth-token": token,
       }});
       setShowAddPhase(false)
-      setError(null)
+      setGlobalError(null)
       getProject(id)
     } catch (error) {
       console.log(error)
-      setError(error.response.data.message)
+      // setGlobalError(error.response.data.message)
     }
   };
 
@@ -51,7 +51,7 @@ function AddPhase({setShowAddPhase, setError, getProject}) {
             onChange={changeHandler}
           />
         </InputGroup>
-        <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(phase)}>Save</Button>
+        <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(phase)}>Save</Button>
       </Col>
       {/* <h1>New Phase</h1> */}
          {/* <div>

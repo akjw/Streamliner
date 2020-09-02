@@ -11,7 +11,7 @@ import { DeleteFilled} from '@ant-design/icons';
 const URL = process.env.REACT_APP_URL;
 const now = moment();
 
-function EditDeliverable({user, setRedirectId, setRedirect}) {
+function EditDeliverable({user, setRedirectId, setRedirect, setGlobalError}) {
   const { id } = useParams()
   const [deliverable, setDeliverable] = useState({})
   const [isLoading, setIsLoading] = useState(true)
@@ -47,17 +47,17 @@ function EditDeliverable({user, setRedirectId, setRedirect}) {
  async function submitHandler(info){
   try {
     if (info.name.trim() == "" || info.description.trim() == ""){
-      setError('Name and description cannot be empty')
+      setGlobalError('Name and description cannot be empty')
       return
     } else if (moment(info.deadline).isBefore(now)){
-      setError('Deadline cannot be in the past')
+      setGlobalError('Deadline cannot be in the past')
       return 
     } 
     let token = localStorage.getItem('token');
     let result = await Axios.put(`${URL}/deliverables/${id}`, info, {headers: {
       "x-auth-token": token,
     }});
-    console.log('put', result)
+    setGlobalError(null)
     setRedirect(true)
   } catch (error) {
     console.log(error)
@@ -71,20 +71,18 @@ function cancel(){
 async function deleteDeliverable(id) {
   try {
     await Axios.delete(`${URL}/deliverables/${id}`)
+    setGlobalError(null)
     setRedirect(true)
   } catch (error) {
     console.log(error)
   }
 }
  
-console.log(deliverable)
-
-
   return (
     <div>
        {error && <Alert variant="danger">{error}</Alert>}
       {!isLoading && 
-        <Card className="my-4 p-4">
+        <Card className="p-4">
            <div className="d-flex justify-content-end">
              <h3>
            <Popconfirm
@@ -119,7 +117,7 @@ console.log(deliverable)
           <Form.Label>Deadline</Form.Label>
           </Row>
           <Row>
-          <DatePicker name="deadline" className="mb-2" selected={moment(deliverable.deadline).toDate()} onChange={handleDeadlineChange}/>
+          <DatePicker name="deadline" className="mb-2 form-control" selected={moment(deliverable.deadline).toDate()} onChange={handleDeadlineChange}/>
           </Row>
           <Row>
             <Form.Label>Mark as Complete</Form.Label>
@@ -131,7 +129,7 @@ console.log(deliverable)
             </select>
           </Row>
           <Row>
-            <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
+            <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
           </Row>
           {/* <Row className="mt-3">
             <Button variant="danger" className="form-control" onClick={()=> deleteDeliverable(id)}>Delete</Button>

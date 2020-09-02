@@ -46,14 +46,8 @@ export default function Login({ loginHandler }){
                       onChange={changeHandler}
                     />
               </InputGroup>
-              <Button variant="primary" className="form-control mt-4" onClick={login}>Login</Button>
+              <Button variant="primary" className="form-control my-4" onClick={login}>Login</Button>
             </Col>
-            {/* <Form.Control name="email" type="email" onChange={changeHandler} />
-          </Row>
-          <Row>
-            <Form.Control name="password" type="password" onChange={changeHandler}/>
-          </Row>
-          <Row> */}
           </Row>
           </Container>
         </div>

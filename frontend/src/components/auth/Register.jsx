@@ -92,7 +92,7 @@ export default function Register ({ registerHandler }){
                   ))}
                     </select>
               </InputGroup>
-            <Button variant="primary" className="form-control mt-4" onClick={()=> registerHandler(userInfo)}>Submit</Button>
+            <Button variant="primary" className="form-control my-4" onClick={()=> registerHandler(userInfo)}>Submit</Button>
               </Col>
             </Row>
           </Container>}
