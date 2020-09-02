@@ -1,14 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useParams, useHistory} from 'react-router-dom';
 import {Container, Row, Col, Button, Alert, Badge, Card} from 'react-bootstrap';
-import { Card as AnCard, Tooltip, Popconfirm, Collapse } from 'antd';
+import { Card as AnCard, Tooltip, Popconfirm } from 'antd';
 import { EditOutlined, DeleteFilled, PlusSquareTwoTone } from '@ant-design/icons';
 import Accordion from 'react-bootstrap/Accordion'
 import AddPhase from '../phases/AddPhase'
 import Axios from 'axios';
 import moment from 'moment-timezone'
 
-const { Panel } = Collapse;
 const now = moment();
 const URL = process.env.REACT_APP_URL
 
@@ -108,6 +107,13 @@ console.log('rpoj', project)
                   <p>{project.description}</p>
                   <p><b>Start</b> {moment(project.startDate).format('MMMM Do YYYY')}</p>
                   <p><b>End</b> {moment(project.endDate).format('MMMM Do YYYY')}</p>
+                  <div>
+                    <p>Members</p>
+                    {members && members.map((member,i) => (
+                    <li key={i}>{member.firstname} {member.lastname}
+                      {members && ((member._id.toString() == project.createdBy._id.toString()) && <span className="ml-2">(Creator)</span>)}
+                    </li>
+                  ))}</div> 
                 </AnCard>
               </Col>
           </Row>

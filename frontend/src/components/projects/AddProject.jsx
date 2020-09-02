@@ -4,9 +4,10 @@ import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment'
+import { Select } from 'antd';
 
 
-
+const { Option } = Select;
 const URL = process.env.REACT_APP_URL
 
 function AddProject({user, setRedirect, setGlobalError}) {
@@ -20,7 +21,7 @@ function AddProject({user, setRedirect, setGlobalError}) {
         description: '',
         organization: user.organization._id,
         createdBy: user._id,
-        members: [user._id],
+        members: [],
         startDate: today,
         endDate: today
       }
@@ -59,6 +60,24 @@ function AddProject({user, setRedirect, setGlobalError}) {
     setProject({...project, startDate: date})
   }
 
+  function handleMembers(value){
+    setProject({...project, members: value})  
+  //   console.log('value', value)
+  //   // console.log('index', index)
+  //   let membersList = [...project.members]
+  //   let index = membersList.indexOf(value)
+  //   console.log('index', index)
+  //   if(index == -1){
+  //     console.log('not present')
+  //     let newList = membersList.concat(value)
+  //     setProject({...project, members: newList})   
+  //   }else{
+  //   membersList.splice(index, 1)
+  //   setProject({...project, members: membersList})  
+  //   }  
+  // console.log('proj val', project)
+    
+  }
 
   function handleEndDateChange(date){
     setProject({...project, endDate: date})
@@ -123,13 +142,28 @@ function AddProject({user, setRedirect, setGlobalError}) {
             <Form.Label>Project Members</Form.Label>
              {users.count == 0 && <p>There are no other members in your organization</p>}
           </Row>
-             {users.map((user, i) => (
+             {/* {users.map((user, i) => (
                     <Row key={i}>
                       <Form.Check type='checkbox' name="members"
                     value={user._id}
                     label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} multiple/>
                     </Row>
+                  ))} */}
+
+                <Select
+                  name="members"
+                  mode="multiple"
+                  style={{ width: '100%' }}
+                  placeholder="Add members to project"
+                  onChange={handleMembers}
+                  optionLabelProp="label"
+                >
+                     {users.map((user, i) => (
+                      <Option key={i}   value={user._id} label={`${user.firstname} ${user.lastname} (${user.email})`}>
+                        {`${user.firstname} ${user.lastname} (${user.email})`}
+                      </Option>
                   ))}
+               </Select>
           <Row className="mt-2">
             <Form.Label>Start</Form.Label>
           </Row>

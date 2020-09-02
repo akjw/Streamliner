@@ -58,9 +58,11 @@ router.get("/:id", async (req, res) => {
 })
 
 // Edit project
-router.put("/:id", async (req, res) => {
+router.put("/:id", checkToken, async (req, res) => {
   try {
-    let project = await Project.findByIdAndUpdate(req.params.id, {title: req.body.title, description: req.body.description, members: req.body.members, startDate: req.body.startDate, endDate: req.body.endDate, activePhase: req.body.activePhase, isComplete: req.body.isComplete});
+    let members = [...req.body.members]
+    let newList = members.concat(req.user.id)
+    let project = await Project.findByIdAndUpdate(req.params.id, {title: req.body.title, description: req.body.description, members: newList, startDate: req.body.startDate, endDate: req.body.endDate, activePhase: req.body.activePhase, isComplete: req.body.isComplete});
     let emailPopulate = Project.find(req.params.id).populate('members')
     let mailList = emailPopulate.map(member => {
         return member.email
@@ -108,7 +110,10 @@ router.delete("/:id", async (req, res) => {
 // Create project
 router.post("/new", checkToken, async (req, res) => {
   try {
-    let project = await Project.create({ title: req.body.title, description: req.body.description, members: req.body.members, createdBy: req.body.createdBy, startDate: req.body.startDate, endDate: req.body.endDate, organization: req.body.organization});
+    let members = [...req.body.members]
+    let newList = members.concat(req.user.id)
+    console.log('new list', newList)
+    let project = await Project.create({ title: req.body.title, description: req.body.description, members: newList, createdBy: req.body.createdBy, startDate: req.body.startDate, endDate: req.body.endDate, organization: req.body.organization});
     res.status(201).json({
       message: 'New project created',
     })
@@ -142,6 +147,7 @@ router.get("/:id/phases", checkToken, async (req, res) => {
 //Create new phase 
 router.post("/:id/phases/new", checkToken, async (req, res) => {
   try {
+
     let phase = await Phase.create({name: req.body.name, project: req.params.id})
     let project = await Project.findByIdAndUpdate(req.params.id, {$push: {phases: phase._id}})
     // console.log('phase', phase)

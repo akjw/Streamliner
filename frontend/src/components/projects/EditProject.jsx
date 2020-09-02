@@ -4,11 +4,12 @@ import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import moment from "moment";
- 
+import { Select } from 'antd';
+
 import "react-datepicker/dist/react-datepicker.css";
 import EditPhase from '../phases/EditPhase';
 
-
+const { Option } = Select;
 const URL = process.env.REACT_APP_URL
 
 function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
@@ -34,8 +35,12 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
    let result = await Axios.get(`${URL}/projects/${id}`)
    let data = result.data.project
    let membersAlreadyInProject = result.data.project.members.map(member => { return member._id})
-   setMembers(membersAlreadyInProject)
-   setProject({...data, members: membersAlreadyInProject})
+   console.log('user id', user._id)
+   console.log('all members', membersAlreadyInProject)
+   let minusUser = membersAlreadyInProject.filter(memberId => memberId.toString() != user._id.toString())
+   console.log('minus user', minusUser)
+   setMembers(minusUser)
+   setProject({...data, members: minusUser})
    setIsLoading(false);
   } catch (error) {
     console.log(error)
@@ -80,6 +85,11 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
     console.log('proj val', project)
   }
 
+
+  function handleMembers(value){
+    setProject({...project, members: value})    
+  }
+
   function handleStartDateChange(date){
     setProject({...project, startDate: date})
   }
@@ -110,12 +120,12 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
       } else if (info.title.trim() == "" || info.description.trim() == ""){
         setGlobalError('Title and description cannot be empty')
         return
-      }  else if (info.activePhase == undefined ){
+      }  else if (phasesNum != 0 && info.activePhase == undefined ){
         setGlobalError("Please mark project's current phase")
         return
       } 
       let token = localStorage.getItem('token');
-      setProject({...project, members: [...project.members, user._id]})
+      // setProject({...project, members: [...project.members, user._id]})
       let result = await Axios.put(`${URL}/projects/${id}`, info, {headers: {
         "x-auth-token": token,
       }});
@@ -153,13 +163,27 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
                         <Form.Label>Project Members</Form.Label>
                         {users.count == 0 && <p>There are no other members in your organization</p>}
                     </Row>
-                        {users.map((user, i) => {
+                        {/* {users.map((user, i) => {
                             return (<Row key={i}>
                               <Form.Check type='checkbox' name="members" 
                             value={user._id}
                             label={`${user.firstname} ${user.lastname} (${user.email})`} onClick={handleInputChange} defaultChecked={members.indexOf(user._id.toString()) != -1 ? true : null}/>
                             </Row>)
-                        })}
+                        })} */}
+                                    <Select
+                            name="members"
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            defaultValue={project.members}
+                            onChange={handleMembers}
+                            optionLabelProp="label"
+                          >
+                                {users.map((user, i) => (
+                                <Option key={i}   value={user._id} label={`${user.firstname} ${user.lastname} (${user.email})`}>
+                                  {`${user.firstname} ${user.lastname} (${user.email})`}
+                                </Option>
+                            ))}
+                          </Select>
                       <Row className="mt-2">
                         <Form.Label>Start Date</Form.Label>
                       </Row>
