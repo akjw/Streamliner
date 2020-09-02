@@ -84,14 +84,27 @@
   color: #4663ac !important;
 }
 
+
+
 .nav-landing, .nav-landing h1{
   background-color: #4663ac !important;
   color: #e1f1fd !important;
   font-weight: bold;
 }
 
+
 .landing-div {
   height: 100vh;
+}
+
+.landing-header {
+  font-size: 5rem;
+  margin-bottom: 0;
+}
+
+.landing-text {
+  font-size: 1.5rem;
+  margin-top: 0;
 }
 
 .red {

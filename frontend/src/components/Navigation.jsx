@@ -1,11 +1,13 @@
 import React from 'react'
 import {Navbar, Nav} from 'react-bootstrap'
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 
 export default function Navigation({user, logoutHandler, isLanding}) {
   return (
     <Navbar bg="dark" expand="lg" variant="dark" className={isLanding ? `nav-landing` : `nav`}>
-    <Navbar.Brand href="/" className={isLanding ? `nav-landing brand` : `nav brand`}>Streamliner</Navbar.Brand>
+    <Navbar.Brand href="/" className={isLanding ? `nav-landing brand` : `nav brand`}><FontAwesomeIcon className="mx-2" icon={faEllipsisV} />Streamliner</Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
