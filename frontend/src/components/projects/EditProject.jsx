@@ -170,7 +170,7 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
                             defaultValue={project.members}
                             onChange={handleMembers}
                             optionLabelProp="label"
-                            className="form-control"
+                            size="large"
                           >
                                 {users.map((user, i) => (
                                 <Option key={i}   value={user._id} label={`${user.firstname} ${user.lastname} (${user.email})`}>
