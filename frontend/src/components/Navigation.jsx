@@ -2,39 +2,39 @@ import React from 'react'
 import {Navbar, Nav} from 'react-bootstrap'
 import { Link } from "react-router-dom";
 
-export default function Navigation({user, logoutHandler}) {
+export default function Navigation({user, logoutHandler, isLanding}) {
   return (
-    <Navbar bg="dark" expand="lg" variant="dark" className="nav">
-    <Navbar.Brand href="/">Streamliner</Navbar.Brand>
+    <Navbar bg="dark" expand="lg" variant="dark" className={isLanding ? `nav-landing` : `nav`}>
+    <Navbar.Brand href="/" className={isLanding ? `nav-landing brand` : `nav brand`}>Streamliner</Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
-      <Link className="nav-link" to="/dashboard">
+      <Link className={isLanding ? `nav-link nav-landing` : `nav-link nav`} to="/dashboard">
             Dashboard
           </Link>
-      <Link className="nav-link" to="/profile">
+      <Link className={isLanding ? `nav-link nav-landing` : `nav-link nav`}  to="/profile">
         Profile
       </Link>
-      <Link className="nav-link" to="/projects/new">
+      <Link className={isLanding ? `nav-link nav-landing` : `nav-link nav`}  to="/projects/new">
         New Project
       </Link>
     </Nav>
-    <Nav>
+    <Nav className={isLanding ? `nav-landing` : `nav`} >
       {user ? (
       <>
-      <Nav.Link href="#user">
+      <Nav.Link href="#user" className={isLanding ? `nav-landing` : `nav`}>
         Hello, {user.firstname}!
       </Nav.Link> 
-      <Link to="/logout" onClick={logoutHandler} className="nav-link">
+      <Link to="/logout" onClick={logoutHandler} className={isLanding ? `nav-link nav-landing` : `nav-link nav`}>
         Logout
       </Link> 
       </>)
       : (
         <>
-          <Link to="/login" className="nav-link">
+          <Link to="/login" className={isLanding ? `nav-link nav-landing` : `nav-link nav`}>
             Login
           </Link>
-          <Link to="/register" className="nav-link">
+          <Link to="/register" className={isLanding ? `nav-link nav-landing` : `nav-link nav`}>
             Register
           </Link>
         </>

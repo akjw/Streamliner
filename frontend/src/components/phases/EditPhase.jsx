@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Alert, Col, InputGroup, FormControl} from 'react-bootstrap'
+import {Row, Button, Alert, Col, InputGroup, FormControl, Container, Card} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 
@@ -12,7 +12,11 @@ function EditPhase({user, setRedirectId, setRedirect, setGlobalError}) {
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    let mounted = true
     getPhase(id)
+    return() => {
+      mounted = false
+    }
   }, [isLoading])
 
   async function getPhase(id){
@@ -58,8 +62,10 @@ function EditPhase({user, setRedirectId, setRedirect, setGlobalError}) {
   return (
     <div className="mt-4">
       {error && <Alert variant="danger">{error}</Alert>}
+      {!isLoading &&
+      <Container> 
+      <Card>
       <h1>Phase Details</h1>
-      {!isLoading && 
       <Row>
         <Col md="6 offset-3">
         <InputGroup>
@@ -82,9 +88,11 @@ function EditPhase({user, setRedirectId, setRedirect, setGlobalError}) {
             onChange={changeHandler}
           />
         </InputGroup>
-        <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(phase)}>Save</Button>
+        <Button variant="primary" className="form-control my-4 purple" onClick={()=> submitHandler(phase)}>Save</Button>
         </Col>
       </Row>
+      </Card>
+      </Container>
         }
     </div>
   )

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Alert, Col, Card} from 'react-bootstrap'
+import {Row, Form, Button, Alert, Col, Card, Container} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
@@ -11,14 +11,19 @@ import { DeleteFilled} from '@ant-design/icons';
 const URL = process.env.REACT_APP_URL;
 const now = moment();
 
-function EditDeliverable({user, setRedirectId, setRedirect, setGlobalError}) {
+function EditDeliverable({user, setRedirectId, setRedirect, setGlobalError, setIsLanding}) {
   const { id } = useParams()
   const [deliverable, setDeliverable] = useState({})
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    let mounted = true
+    setIsLanding(false)
     getDeliverable(id)
+    return() => {
+      mounted = false
+    }
   }, [isLoading])
 
 
@@ -82,6 +87,7 @@ async function deleteDeliverable(id) {
     <div>
        {error && <Alert variant="danger">{error}</Alert>}
       {!isLoading && 
+      <Container>
         <Card className="p-4">
            <div className="d-flex justify-content-end">
              <h3>
@@ -129,7 +135,7 @@ async function deleteDeliverable(id) {
             </select>
           </Row>
           <Row>
-            <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
+            <Button variant="primary" className="form-control my-4 purple" onClick={()=> submitHandler(deliverable)}>Save</Button>
           </Row>
           {/* <Row className="mt-3">
             <Button variant="danger" className="form-control" onClick={()=> deleteDeliverable(id)}>Delete</Button>
@@ -138,7 +144,7 @@ async function deleteDeliverable(id) {
         </Col>
         </Row>
         </Card>
-       
+        </Container>
         }
     </div>
   )

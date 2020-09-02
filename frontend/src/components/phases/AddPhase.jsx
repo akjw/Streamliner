@@ -51,19 +51,8 @@ function AddPhase({setShowAddPhase, setError, getProject, setGlobalError}) {
             onChange={changeHandler}
           />
         </InputGroup>
-        <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(phase)}>Save</Button>
+        <Button variant="primary" className="form-control my-4 purple" onClick={()=> submitHandler(phase)}>Save</Button>
       </Col>
-      {/* <h1>New Phase</h1> */}
-         {/* <div>
-          <Container>
-          <Row>
-            <Form.Control name="name" type="text" onChange={changeHandler} placeholder="Name"/>
-          </Row>
-          <Row>
-            <Button variant="primary" onClick={()=> submitHandler(phase)}>Save</Button>
-          </Row>
-          </Container>
-        </div> */}
     </Row>
   </div>
   )

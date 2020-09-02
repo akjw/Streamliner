@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'Asket';
+  src: local('Asket'), url(./fonts/asket.narrow-light.ttf) format('truetype');
+}

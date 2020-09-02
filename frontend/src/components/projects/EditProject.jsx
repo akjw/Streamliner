@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Card, Alert, Col} from 'react-bootstrap'
+import {Row, Form, Button, Card, Alert, Col, Container} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
@@ -12,7 +12,7 @@ import EditPhase from '../phases/EditPhase';
 const { Option } = Select;
 const URL = process.env.REACT_APP_URL
 
-function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
+function EditProject({user, setRedirect, setRedirectId, setGlobalError, setIsLanding}) {
   const { id } = useParams()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -24,9 +24,14 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
   const [phasesLoading, setPhasesLoading] = useState(true)
   
   useEffect(() => {
+    let mounted = true
+    setIsLanding(false)
     getOrganizationUsers(user.organization._id);
     getProjectPhases(id);
     getProject(id);
+    return() => {
+      mounted = false
+    }
   }, [])
 
 
@@ -142,6 +147,7 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
         {!isLoading && 
+        <Container>
           <Card className="p-4">
             <h1>Edit Project</h1>
               <Row>
@@ -222,7 +228,8 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
             </Form>
           </Col>
         </Row>
-      </Card>}
+      </Card>
+      </Container>}
     </div>
   )
 }

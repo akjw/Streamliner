@@ -9,7 +9,7 @@ import moment from 'moment-timezone'
 const URL = process.env.REACT_APP_URL
 const now = moment().format('MM DD YYYY');
 
-function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError}) {
+function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError, setIsLanding}) {
   // grab project id from url
   const { id } = useParams()
   const today = new Date()
@@ -19,7 +19,12 @@ function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError}) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    let mounted = true
+    setIsLanding(false)
     getPhase(id)
+    return() => {
+      mounted = false
+    }
   }, [])
 
 
@@ -70,6 +75,7 @@ function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError}) {
   return (
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
+      <Container>
       <Card className="p-4">
       <h1>New {phase.subheader}</h1>
       <Row>
@@ -109,13 +115,14 @@ function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError}) {
         <DatePicker name="deadline" selected={deliverable.deadline != null ? deliverable.deadline : today} onChange={handleDeadlineChange} className="form-control"/>
         </Row>
         <Row>
-        <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(deliverable)}>Save</Button>
+        <Button variant="primary" className="form-control my-4 purple" onClick={()=> submitHandler(deliverable)}>Save</Button>
         </Row>
         </Form.Group>
         </Form>
       </Col>
       </Row>
       </Card>
+      </Container>
     </div>
   )
 }

@@ -8,12 +8,17 @@ import moment from 'moment'
 const URL = process.env.REACT_APP_URL
 const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-function EditUser({user, setGlobalError, setRedirect}) {
+function EditUser({user, setGlobalError, setRedirect, setIsLanding}) {
   const [isLoading, setIsLoading] = useState(true)
   const [userInfo, setUserInfo] = useState({firstname: '', lastname: '', email: '', password: ''})
 
   useEffect(() => {
+    let mounted = true
+    setIsLanding(false)
     getUserProfile()
+    return() => {
+      mounted = false
+    }
   }, [])
   
   async function getUserProfile(){
@@ -110,7 +115,7 @@ function EditUser({user, setGlobalError, setRedirect}) {
                   onChange={changeHandler}
                 />
           </InputGroup>
-        <Button variant="primary" className="form-control mt-4" onClick={()=> submitHandler(userInfo)}>Submit</Button>
+        <Button variant="primary" className="form-control mt-4 purple" onClick={()=> submitHandler(userInfo)}>Submit</Button>
         </Col>
         </Row>
      </Container>}

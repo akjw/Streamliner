@@ -6,8 +6,14 @@ import { EditOutlined, DeleteFilled, PlusSquareTwoTone } from '@ant-design/icons
 import Axios from 'axios';
 import moment from 'moment'
 
-export default function UserProfile({user}) {
-
+export default function UserProfile({user, setIsLanding}) {
+useEffect(() => {
+  let mounted = true
+  setIsLanding(false)
+  return() => {
+    mounted = false
+  }
+}, [])
   return (
     <div className="mt-4">
       <Container>

@@ -10,7 +10,7 @@ import { Select } from 'antd';
 const { Option } = Select;
 const URL = process.env.REACT_APP_URL
 
-function AddProject({user, setRedirect, setGlobalError}) {
+function AddProject({user, setRedirect, setGlobalError, setIsLanding}) {
   let usersList;
   const [error, setError] = useState(null)
   const today = new Date()
@@ -28,7 +28,12 @@ function AddProject({user, setRedirect, setGlobalError}) {
     )
   
   useEffect(() => {
+    let mounted = true
+    setIsLanding(false)
     getOrganizationUsers(user.organization._id);
+    return() => {
+      mounted = false
+    }
   }, [])
 
   async function getOrganizationUsers(id){
@@ -62,21 +67,6 @@ function AddProject({user, setRedirect, setGlobalError}) {
 
   function handleMembers(value){
     setProject({...project, members: value})  
-  //   console.log('value', value)
-  //   // console.log('index', index)
-  //   let membersList = [...project.members]
-  //   let index = membersList.indexOf(value)
-  //   console.log('index', index)
-  //   if(index == -1){
-  //     console.log('not present')
-  //     let newList = membersList.concat(value)
-  //     setProject({...project, members: newList})   
-  //   }else{
-  //   membersList.splice(index, 1)
-  //   setProject({...project, members: membersList})  
-  //   }  
-  // console.log('proj val', project)
-    
   }
 
   function handleEndDateChange(date){
@@ -121,6 +111,7 @@ function AddProject({user, setRedirect, setGlobalError}) {
   return (
     <div>
     {error && <Alert variant="danger">{error}</Alert>}
+    <Container>
     <Card className="p-4">
       <h1>New Project</h1>
       <Row>
@@ -171,12 +162,13 @@ function AddProject({user, setRedirect, setGlobalError}) {
           <DatePicker name="endDate" selected={project.endDate != null ? project.endDate : today} onChange={handleEndDateChange} className="form-control"/>
           </Row>
           <Row>
-            <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(project)}>Save</Button>
+            <Button variant="primary" className="form-control my-4 purple" onClick={()=> submitHandler(project)}>Save</Button>
           </Row>
           </Form>
           </Col>
           </Row>
           </Card>
+          </Container>
         </div>
   
   )}

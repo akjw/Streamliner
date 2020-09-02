@@ -10,7 +10,7 @@ const URL = process.env.REACT_APP_URL
 // const today = new Date()
 const now = moment();
 
-function Dashboard({ user }) {
+function Dashboard({ user, setIsLanding}) {
  const [projects, setProjects] = useState([])
  const [isLoading, setIsLoading] = useState(true)
  const [projectsNum, setProjectsNum] = useState(0)
@@ -64,9 +64,13 @@ async function deleteProject(e) {
 }
 
 useEffect(() => {
-
+    let mounted = true
+    setIsLanding(false);
     getUserProjects();
     getArchive();
+    return() => {
+      mounted = false
+    }
 }, [])
 console.log('archive', archive)
   return (
@@ -77,7 +81,7 @@ console.log('archive', archive)
           <div className="d-flex justify-content-end">
             <div className="row">
               <div className="col">
-              <Switch checkedChildren="Current" unCheckedChildren="Archived" defaultChecked onClick={toggleProjects}/>
+              <Switch className="purple" checkedChildren="Current" unCheckedChildren="Archived" defaultChecked onClick={toggleProjects}/>
               </div>
             </div>
           </div>
@@ -89,7 +93,7 @@ console.log('archive', archive)
               <Col key={project._id} md="3">
                 <Card
                   title={project.title}
-                  extra={ <h4><Link to={`/projects/${project._id}`}><EyeOutlined /></Link></h4>}
+                  extra={ <h4><Link to={`/projects/${project._id}`}><EyeOutlined className="purple-outline" /></Link></h4>}
                   className="mt-2 mb-2"
                 >
                   <p>{project.description}</p>

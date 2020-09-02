@@ -27,8 +27,10 @@ function App() {
   const [user, setUser] = useState(null)
   const [isAuth, setIsAuth] = useState(false)
   const [redirect, setRedirect] = useState(false)
+  const [isLanding, setIsLanding] = useState(false)
 
   useEffect(() => {
+    let mounted = true
     let token = localStorage.getItem('token');
     //if token exists
     if(!(token == null)) {
@@ -42,6 +44,9 @@ function App() {
       }
     }
     setRedirect(false)
+    return() => {
+      mounted = false;
+    }
   }, [redirect, isAuth])
 
   function logoutHandler(e){
@@ -113,64 +118,64 @@ function App() {
   
 
   return (
-      <div className="App main-theme">
+      <div className={isLanding ? `App purple` : `App main-theme`}>
        <Router>
-          <Navigation user={user} logoutHandler={logoutHandler}/>
+          <Navigation user={user} logoutHandler={logoutHandler} isLanding={isLanding}/>
           {globalError && <Alert variant="danger">{globalError}</Alert>}
-          <Container>
+          {/* <Container> */}
             <Switch>
-            <Route exact path="/" exact render={() => <LandingPage />} />
+            <Route exact path="/" exact render={() => <LandingPage setIsLanding={setIsLanding}/>} />
               {/* <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage />} /> */}
-              <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} /> : <Redirect to="/login"/>}/>
-              <Route exact path="/profile" render={() => isAuth? <UserProfile user={user} /> : <Redirect to="/login"/>} /> 
+              <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} setIsLanding={setIsLanding}/> : <Redirect to="/login"/>}/>
+              <Route exact path="/profile" render={() => isAuth? <UserProfile user={user} setIsLanding={setIsLanding}/> : <Redirect to="/login"/>} /> 
 
               <Route path="/users/edit" exact render={() => 
                 isAuth && redirect ? <Redirect to="/profile" /> 
-                : isAuth ? <EditUser user={user} setRedirect={setRedirect} setGlobalError={setGlobalError}/> 
+                : isAuth ? <EditUser user={user} setRedirect={setRedirect} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
               }/>
             
               <Route path="/projects/new" exact render={() => 
                 isAuth && redirect ? <Redirect to="/dashboard" /> 
-                : isAuth ? <AddProject user={user} setRedirect={setRedirect} setGlobalError={setGlobalError}/> 
+                : isAuth ? <AddProject user={user} setRedirect={setRedirect} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
               }/>
 
                <Route path="/phases/:id" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/>
-                : isAuth ? <EditPhase user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/> 
+                : isAuth ? <EditPhase user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
               }/>
 
                 <Route path="/phases/:id/deliverables/new" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/>
-                : isAuth ? <AddDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/> 
+                : isAuth ? <AddDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
               }/>
              
               <Route path="/projects/:id/edit" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/> 
-                : isAuth ? <EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/>
+                : isAuth ? <EditProject user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/>
                 : <Redirect to="/login"/>
               }/>
                
 
               <Route path="/projects/:id" exact render={() => 
                 isAuth && redirect ? <Redirect to="/dashboard" /> 
-                : isAuth ? <Project user={user} setRedirect={setRedirect} setGlobalError={setGlobalError}/>
+                : isAuth ? <Project user={user} setRedirect={setRedirect} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/>
                 : <Redirect to="/login"/>
               }/>
 
               <Route path="/deliverables/:id" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/>
-                : isAuth ? <EditDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError}/> 
+                : isAuth ? <EditDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
               }/>
 
-              <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} setGlobalError={setGlobalError}/>} />
-              <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler}/>} />
+              <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/>} />
+              <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler} setIsLanding={setIsLanding}/>} />
             </Switch>
-          </Container>
+          {/* </Container> */}
         </Router>
     </div>
   );

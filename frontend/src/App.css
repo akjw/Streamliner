@@ -3,6 +3,10 @@
   text-align: center;
 }
 
+.App h1 {
+  color: #4663ac !important;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -57,12 +61,37 @@
 }
 
 .wave {
-  min-width: 100vw;
+  height: 250px;
+  position: fixed;
+  bottom:0px;
+  left: 0px;
+  width: 100%;
  
 }
 
 .nav {
+  background-color: #e1f1fd !important;
+  color: #4663ac !important;
+  font-weight: bold;
+}
+
+.purple {
   background-color: #4663ac !important;
+  color: #e1f1fd !important;
+}
+
+.purple-outline {
+  color: #4663ac !important;
+}
+
+.nav-landing, .nav-landing h1{
+  background-color: #4663ac !important;
+  color: #e1f1fd !important;
+  font-weight: bold;
+}
+
+.landing-div {
+  height: 100vh;
 }
 
 .red {
@@ -71,4 +100,9 @@
 
 .full-width {
   width: 100% !important;
+}
+
+.brand {
+  font-family: Asket;
+  font-size: 2em;
 }

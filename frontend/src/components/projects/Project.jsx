@@ -11,7 +11,7 @@ import moment from 'moment-timezone'
 const now = moment();
 const URL = process.env.REACT_APP_URL
 
-function Project({ user, setRedirect, redirect, setGlobalError }) {
+function Project({ user, setRedirect, redirect, setGlobalError, setIsLanding }) {
  const { id } = useParams()
  let history = useHistory()
  const [showAddPhase, setShowAddPhase] = useState(false)
@@ -66,8 +66,13 @@ function cancel(){
 }
 
 useEffect(() => {
+  let mounted = true
+  setIsLanding(false)
   if(isLoading){
     getProject(id);
+  }
+  return() => {
+    mounted = false
   }
 }, [isLoading, showAddPhase, project, redirect])
 
@@ -75,7 +80,8 @@ console.log('rpoj', project)
   return (
     <div className="mt-4">
        {error && <Alert variant="danger">{error}</Alert>}
-       {!isLoading && <Container fluid className="mt-4">
+       {!isLoading && 
+       <Container fluid className="mt-4">
        <Row>
               <Col>
               <AnCard
