@@ -19,6 +19,20 @@ let db = [
     password: "password",
     organization: "Umbra"
   },
+  {
+    firstname: "Louise",
+    lastname: "Gluck",
+    email: "lou@email.com",
+    password: "password",
+    organization: "Averno"
+  },
+  {
+    firstname: "Zoe",
+    lastname: "Woodard",
+    email: "zoe@email.com",
+    password: "password",
+    organization: "Delta"
+  },
 ];
 
 db.forEach((ele, i) => {
