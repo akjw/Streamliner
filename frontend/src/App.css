@@ -68,3 +68,7 @@
 .red {
   color: crimson;
 }
+
+.full-width {
+  width: 100% !important;
+}

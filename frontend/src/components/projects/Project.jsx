@@ -6,7 +6,8 @@ import { EditOutlined, DeleteFilled, PlusSquareTwoTone } from '@ant-design/icons
 import Accordion from 'react-bootstrap/Accordion'
 import AddPhase from '../phases/AddPhase'
 import Axios from 'axios';
-import moment from 'moment'
+import moment from 'moment-timezone'
+
 const { Panel } = Collapse;
 const now = moment();
 const URL = process.env.REACT_APP_URL
@@ -75,11 +76,14 @@ console.log('rpoj', project)
        <Row>
               <Col>
               <AnCard
-                  extra={user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
+              className="mt-2 mb-2"
+                  extra={
                     <h4> 
                        <Tooltip title="New Project Phase">
                         <PlusSquareTwoTone className="mx-2" onClick={()=>setShowAddPhase(!showAddPhase)} />
                       </Tooltip>
+                      {user ? (project && (user._id.toString() == project.createdBy._id.toString())) &&
+                      <>
                       <Tooltip title="Edit Project">
                         <Link to={`/projects/${id}/edit`} className="mx-2"><EditOutlined  /></Link>
                       </Tooltip>
@@ -93,9 +97,8 @@ console.log('rpoj', project)
                           >
                            <DeleteFilled id={id} className="mx-2"/>
                       </Popconfirm>
-                    </h4> : ''}
-                  className="mt-2 mb-2"
-                >
+                      </>
+                      : ''}</h4>}>
                   {showAddPhase && <AddPhase setShowAddPhase={setShowAddPhase} getProject={getProject} setError={setError}/>}
                   <h1>{project.title}</h1>
                   <p>{project.description}</p>
@@ -117,7 +120,6 @@ console.log('rpoj', project)
                           <h4>{phase.name}
                           {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <Badge pill variant="primary" className="mx-2">Active</Badge>}
                           </h4>
-                          {/* {user ? (project && (user._id.toString() == project.createdBy._id.toString())) && */}
                           <h4> 
                             <Tooltip title={`New ${phase.subheader}`}>
                             <Link to={`/phases/${phase._id}/deliverables/new`}>
@@ -162,8 +164,10 @@ console.log('rpoj', project)
                                           <div>
                                             <p>Status: {d.isComplete? 'Complete' : 'In-Progress'}</p>
                                           </div>
-                                          <p><b>Due {moment(d.deadline).fromNow()}</b></p>
-                                          {moment(d.deadline).isBefore(now) && !d.isComplete ? <p className="red"><i>Overdue</i></p> : ''}
+                                          {(moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') < 0 && !d.isComplete) ? <p className="red"><i>Overdue</i></p>
+                                          : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 1 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} days</b></p> 
+                                          : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 0 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} day</b></p> 
+                                          : <p><b>Due today</b></p>}
                                             <div>
                                               <Link to={`/deliverables/${d._id}`}>Edit</Link>
                                             </div>

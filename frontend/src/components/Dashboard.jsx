@@ -4,7 +4,7 @@ import {Container, Row,  Col, Button, Alert} from 'react-bootstrap';
 import Axios from 'axios';
 import { Switch, Card } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 const URL = process.env.REACT_APP_URL
 // const today = new Date()
@@ -78,7 +78,6 @@ console.log('archive', archive)
             <div className="row">
               <div className="col">
               <Switch checkedChildren="Current" unCheckedChildren="Archived" defaultChecked onClick={toggleProjects}/>
-              {/* <Button variant="info" onClick={toggleProjects}>{showCurrent ? 'Show Completed Projects' : 'Show Current Projects'}</Button> */}
               </div>
             </div>
           </div>
@@ -94,19 +93,12 @@ console.log('archive', archive)
                   className="mt-2 mb-2"
                 >
                   <p>{project.description}</p>
-                  {/* <p><b>Start</b> {moment(project.startDate).format('MMMM Do YYYY')}</p> */}
+                  {(moment(project.endDate).tz('Asia/Singapore').diff(now, 'days') < 0 && !project.isComplete) ? <>
                   <p><b>Due {moment(project.endDate).fromNow()}</b></p>
-                  {moment(project.endDate).isBefore(now) && !project.isComplete ? <p className="red"><i>Overdue</i></p> : ''}
+                  <p className="red"><i>Overdue</i></p> </>
+                                          : moment(project.endDate).tz('Asia/Singapore').diff(now, 'days') > 0 ? <p><b>Due in {moment(project.endDate).tz('Asia/Singapore').diff(now, 'days')} days</b></p> 
+                                          : <p><b>Due today</b></p>}
                 </Card>
-                {/* <Card>
-                  <Card.Body>
-                    <b>{project.title}</b>
-                    <p>{project.description}</p>
-                      <div>
-                        <Link to={`/projects/${project._id}`}>View</Link>
-                      </div>
-                  </Card.Body>
-                </Card> */}
               </Col>
             ))}
           </Row>}
@@ -121,15 +113,8 @@ console.log('archive', archive)
                   className="mt-2 mb-2"
                 >
                   <p>{project.description}</p>
-                  <p><b>Due {moment(project.endDate).fromNow()}</b></p>
+                  <p><b>Due {moment(project.endDate).format('MMMM Do YYYY')}</b></p>
                 </Card>
-                {/* <Card className={project.isComplete ? 'complete' : '' }>
-                  <Card.Body>
-                    <b>{project.title}</b>
-                    <p>{project.description}</p>
-                      <div>
-                        <Link to={`/projects/${project._id}`}>View</Link> */}
-                        {/* {user._id.toString() == project.createdBy._id.toString() && <Button onClick={deleteProject} id={project._id} variant="danger">Delete</Button>} */}
               </Col>
             ))}
           </Row>}
