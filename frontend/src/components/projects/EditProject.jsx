@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Container, Alert, Col} from 'react-bootstrap'
+import {Row, Form, Button, Card, Alert, Col} from 'react-bootstrap'
 import {useParams} from 'react-router-dom';
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
@@ -11,9 +11,8 @@ import EditPhase from '../phases/EditPhase';
 
 const URL = process.env.REACT_APP_URL
 
-function EditProject({user, setRedirect, setRedirectId}) {
+function EditProject({user, setRedirect, setRedirectId, setGlobalError}) {
   const { id } = useParams()
-  let phaseSelect;
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [users, setUsers] = useState([])
@@ -37,16 +36,6 @@ function EditProject({user, setRedirect, setRedirectId}) {
    let membersAlreadyInProject = result.data.project.members.map(member => { return member._id})
    setMembers(membersAlreadyInProject)
    setProject({...data, members: membersAlreadyInProject})
-  //  if(projectPhases){
-  //    projectPhases.forEach((phase, i) => {
-  //      console.log('projectPhase', phase)
-  //      console.log('activePhase', project.activePhase._id.toString())
-  //      console.log('equal', phase._id.toString() == project.activePhase._id.toString())
-  //      if(phase._id.toString() == project.activePhase._id.toString()){
-  //        phaseSelect = phase._id.toString();
-  //      }
-  //    })
-  //  }
    setIsLoading(false);
   } catch (error) {
     console.log(error)
@@ -75,7 +64,6 @@ function EditProject({user, setRedirect, setRedirectId}) {
      let result = await Axios.get(`${URL}/projects/${id}/phases`, {headers: {
        "x-auth-token": token,
      }})
-     console.log('results phases', result)
      setProjectPhases(result.data.phases)
      setPhasesNum(result.data.count)
      setPhasesLoading(false);
@@ -117,13 +105,13 @@ function EditProject({user, setRedirect, setRedirectId}) {
   async function submitHandler(info){
     try {
       if (moment(info.endDate).isBefore(info.startDate)){
-        setError('End date must be after start date')
+        setGlobalError('End date must be after start date')
         return 
       } else if (info.title.trim() == "" || info.description.trim() == ""){
-        setError('Title and description cannot be empty')
+        setGlobalError('Title and description cannot be empty')
         return
       }  else if (info.activePhase == undefined ){
-        setError("Please mark project's current phase")
+        setGlobalError("Please mark project's current phase")
         return
       } 
       let token = localStorage.getItem('token');
@@ -131,6 +119,7 @@ function EditProject({user, setRedirect, setRedirectId}) {
       let result = await Axios.put(`${URL}/projects/${id}`, info, {headers: {
         "x-auth-token": token,
       }});
+      setGlobalError(null)
       setRedirectId(id)
       setRedirect(true)
     } catch (error) {
@@ -138,91 +127,84 @@ function EditProject({user, setRedirect, setRedirectId}) {
     }
   };
 
-  function verifyIfChecked(user){
-    let findChecked = members.indexOf(user._id)
-    if(findChecked == -1){
-      return <Row key={user._id}>
-        <Form.Check type='checkbox' name="members"
-      value={user._id}
-      label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} />
-      </Row>
-    } else {
-      return <Row key={user._id}>
-      <Form.Check type='checkbox' name="members"
-      value={user._id}
-      label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} checked={true}/>
-      </Row>
-    }
-  }
 
   return (
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
-         <div>
-          {!isLoading && 
-          <Container>
-              <h1>Edit Project</h1>
+        {!isLoading && 
+          <Card className="p-4">
+            <h1>Edit Project</h1>
               <Row>
-                <Col md="6 offset-3">
-                <Row>
-                    <Form.Control name="title" type="text" onChange={changeHandler} placeholder="Title" defaultValue={project.title}/>
+                <Col md="8 offset-2">
+                  <Form>
+                  <Row className="mt-2">
+                    <Form.Label>Title</Form.Label>
                   </Row>
-                  <Row>
-                    <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description" defaultValue={project.description}/>
-                  </Row>
-                  <Row>
-                    <Form.Label>Project Members</Form.Label>
-                    {users.count == 0 && <p>There are no other members in your organization</p>}
-                  </Row>
+                    <Row>
+                        <Form.Control name="title" type="text" onChange={changeHandler} placeholder="Title" defaultValue={project.title}/>
+                    </Row>
+                    <Row className="mt-2">
+                      <Form.Label>Description</Form.Label>
+                    </Row>
+                    <Row>
+                        <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description" defaultValue={project.description}/>
+                    </Row>
+                    <Row className="mt-2">
+                        <Form.Label>Project Members</Form.Label>
+                        {users.count == 0 && <p>There are no other members in your organization</p>}
+                    </Row>
                         {users.map((user, i) => {
                             return (<Row key={i}>
-                              <Form.Check type='checkbox' name="members"
+                              <Form.Check type='checkbox' name="members" 
                             value={user._id}
                             label={`${user.firstname} ${user.lastname} (${user.email})`} onClick={handleInputChange} defaultChecked={members.indexOf(user._id.toString()) != -1 ? true : null}/>
                             </Row>)
                         })}
-                  <Row>
-                    <Form.Label>Start Date</Form.Label>
-                    <DatePicker name="startDate" selected={moment(project.startDate).toDate()} onChange={handleStartDateChange} className="form-control"/>
-                  </Row>
-                  <Row>
-                  <Form.Label>End Date</Form.Label>
-                  <DatePicker name="endDate" selected={moment(project.endDate).toDate()} onChange={handleEndDateChange} className="form-control"/>
-                  </Row>
-                  <Row>
-                    <Form.Label>Mark as Complete</Form.Label>
-                  </Row>
-                  <Row>
-                    <select onChange={changeHandler} name="isComplete" defaultValue={project.isComplete ? true : false} className="form-control">
-                            <option value={true}>Yes</option>
-                            <option value={false}>No</option>
-                    </select>
-                  </Row>
-                  <div>
-                      {(!phasesLoading && phasesNum != 0) && 
-                      <>
-                      <Row>
-                        <Form.Label>Set Active Phase</Form.Label>
+                      <Row className="mt-2">
+                        <Form.Label>Start Date</Form.Label>
                       </Row>
                       <Row>
-                        <select onChange={changeHandler} name="activePhase" defaultValue={project.activePhase ? project.activePhase : ''} className="form-control">
-                          <option value={""}>Phase</option>
-                        {projectPhases.map((phase, i) => {
-                          return <option key={i} value={phase._id}>{phase.name}</option>
-                          })}
-                          </select>
+                        <DatePicker name="startDate" selected={moment(project.startDate).toDate()} onChange={handleStartDateChange} className="form-control"/>
                       </Row>
-                    </>
-                    }
+                      <Row className="mt-2">
+                        <Form.Label>End Date</Form.Label>
+                      </Row>
+                      <Row>
+                      <DatePicker name="endDate" selected={moment(project.endDate).toDate()} onChange={handleEndDateChange} className="form-control"/>
+                      </Row>
+                      <Row className="mt-2">
+                        <Form.Label>Mark as Complete</Form.Label>
+                      </Row>
+                      <Row>
+                        <select onChange={changeHandler} name="isComplete" defaultValue={project.isComplete ? true : false} className="form-control">
+                                <option value={true}>Yes</option>
+                                <option value={false}>No</option>
+                        </select>
+                      </Row>
+                      <div>
+                          {(!phasesLoading && phasesNum != 0) && 
+                          <>
+                          <Row className="mt-2">
+                            <Form.Label>Set Active Phase</Form.Label>
+                          </Row>
+                          <Row>
+                            <select onChange={changeHandler} name="activePhase" defaultValue={project.activePhase ? project.activePhase : ''} className="form-control">
+                              <option value={""}>Phase</option>
+                            {projectPhases.map((phase, i) => {
+                              return <option key={i} value={phase._id}>{phase.name}</option>
+                              })}
+                              </select>
+                          </Row>
+                        </>
+                        }
                   </div>
                   <Row>
                     <Button variant="primary" onClick={()=> submitHandler(project)} className="form-control mt-4">Save</Button>
                   </Row>
-                </Col>
-              </Row>
-          </Container>}
-        </div>
-      
+            </Form>
+          </Col>
+        </Row>
+      </Card>}
     </div>
   )
 }

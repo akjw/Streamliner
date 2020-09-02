@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Form, Button, Container, Alert} from 'react-bootstrap'
+import {Row, Form, Button, Container, Alert, Col, Card} from 'react-bootstrap'
 import Axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,7 +9,7 @@ import moment from 'moment'
 
 const URL = process.env.REACT_APP_URL
 
-function AddProject({user, setRedirect}) {
+function AddProject({user, setRedirect, setGlobalError}) {
   let usersList;
   const [error, setError] = useState(null)
   const today = new Date()
@@ -64,19 +64,6 @@ function AddProject({user, setRedirect}) {
     setProject({...project, endDate: date})
   }
 
-//   function handleInputChange(e){
-//     let membersList = [...project.members]
-//     let index = membersList.indexOf(e.target.value)
-//     if(index == -1){
-//         setProject({...project, members: [...project.members, e.target.value]})   
-//     }else{
-//       membersList.splice(index, 1)
-//       setProject({...project, members: membersList})  
-//     }  
-//     console.log('proj val', project)
-// }
-
- 
   function handleInputChange(e){
     if(e.target.checked){
         setProject({...project, members: [...project.members, e.target.value]})   
@@ -92,10 +79,10 @@ function AddProject({user, setRedirect}) {
   async function submitHandler(info){
     try {
       if (moment(info.endDate).isBefore(info.startDate)){
-        setError('End date must be after start date')
+        setGlobalError('End date must be after start date')
         return 
       } else if (info.title.trim() == "" || info.description.trim() == ""){
-        setError('Title and description cannot be empty')
+        setGlobalError('Title and description cannot be empty')
         return
       } 
         let token = localStorage.getItem('token');
@@ -103,6 +90,7 @@ function AddProject({user, setRedirect}) {
         let result = await Axios.post(`${URL}/projects/new`, info, {headers: {
           "x-auth-token": token,
         }});
+        setGlobalError(null)
         setRedirect(true)
       
     } catch (error) {
@@ -112,26 +100,28 @@ function AddProject({user, setRedirect}) {
   };
 
   return (
-    <>
-    {error && <Alert variant="danger">{error}</Alert>}
     <div>
+    {error && <Alert variant="danger">{error}</Alert>}
+    <Card className="p-4">
       <h1>New Project</h1>
-         <div>
-          <Container>
+      <Row>
+      <Col md="8 offset-2">
+        <Form>
+          <Row className="mt-2">
+            <Form.Label>Title</Form.Label>
+          </Row>
           <Row>
             <Form.Control name="title" type="text" onChange={changeHandler} placeholder="Title"/>
+          </Row>
+          <Row className="mt-2">
+            <Form.Label>Description</Form.Label>
           </Row>
           <Row>
             <Form.Control name="description" type="text" onChange={changeHandler} placeholder="Description"/>
           </Row>
-          <Row>
+          <Row className="mt-2">
             <Form.Label>Project Members</Form.Label>
              {users.count == 0 && <p>There are no other members in your organization</p>}
-             {/* <Form.Control as="select" multiple name="members" onClick={handleInputChange} options={users}>
-             {users.map((user, i) => (
-                    <option key={i} value={user._id}>{`${user.firstname} ${user.lastname} (${user.email})`}</option>
-                  ))} 
-             </Form.Control> */}
           </Row>
              {users.map((user, i) => (
                     <Row key={i}>
@@ -140,23 +130,28 @@ function AddProject({user, setRedirect}) {
                     label={`${user.firstname} ${user.lastname} (${user.email})`} onChange={handleInputChange} multiple/>
                     </Row>
                   ))}
-          <Row>
-            <Form.Label>Start Date</Form.Label>
-            <DatePicker name="startDate" selected={project.startDate != null ? project.startDate : today} onChange={handleStartDateChange}/>
+          <Row className="mt-2">
+            <Form.Label>Start</Form.Label>
           </Row>
           <Row>
-          <Form.Label>End Date</Form.Label>
-          <DatePicker name="endDate" selected={project.endDate != null ? project.endDate : today} onChange={handleEndDateChange}/>
+            <DatePicker name="startDate" selected={project.startDate != null ? project.startDate : today} onChange={handleStartDateChange} className="form-control"/>
+          </Row>
+          <Row className="mt-2">
+            <Form.Label>End</Form.Label>
           </Row>
           <Row>
-            <Button variant="primary" onClick={()=> submitHandler(project)}>Save</Button>
+          <DatePicker name="endDate" selected={project.endDate != null ? project.endDate : today} onChange={handleEndDateChange} className="form-control"/>
           </Row>
-          </Container>
+          <Row>
+            <Button variant="primary" className="form-control my-4" onClick={()=> submitHandler(project)}>Save</Button>
+          </Row>
+          </Form>
+          </Col>
+          </Row>
+          </Card>
         </div>
-      
-    </div>
-    </>
-  )
-}
+  
+  )}
+
 
 export default AddProject
