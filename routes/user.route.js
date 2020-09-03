@@ -40,4 +40,19 @@ router.put('/edit', checkToken, async (req, res) => {
   }
 })
 
+router.put('/:id/organization', checkToken, async (req, res) => {
+  try {
+    let user = await User.findByIdAndUpdate(req.user.id, {organization: req.body.organization} )
+    if(user){
+      res.status(200).json({
+        message: 'User organization was successfully updated'
+      })
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: 'Cannnot update user info',
+    })
+  }
+})
+
 module.exports = router;
