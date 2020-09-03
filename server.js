@@ -24,9 +24,9 @@ app.use('/api/phases', require('./routes/phase.route'));
 app.use('/api/deliverables', require('./routes/deliverable.route'));
 
 //==== 404 errors
-app.get('*', (req, res) => {
-  res.status(404).json({ message: "404: Not Found" , code: 'EB404'})
-})
+// app.get('*', (req, res) => {
+//   res.status(404).json({ message: "404: Not Found" , code: 'EB404'})
+// })
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));

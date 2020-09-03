@@ -129,7 +129,7 @@ function App() {
             <Switch>
             <Route exact path="/" exact render={() => <LandingPage setIsLanding={setIsLanding}/>} />
               {/* <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage setIsLanding={setIsLanding}/>} /> */}
-              <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} setIsLanding={setIsLanding}/> : <Redirect to="/login"/>}/>
+              <Route exact path="/dashboard" render={() => isAuth ? <Dashboard user={user} setIsLanding={setIsLanding} setRedirect={setRedirect}/> : <Redirect to="/login"/>}/>
               <Route exact path="/profile" render={() => isAuth? <UserProfile user={user} setIsLanding={setIsLanding}/> : <Redirect to="/login"/>} /> 
 
               <Route path="/users/edit" exact render={() => 

@@ -10,7 +10,7 @@ const URL = process.env.REACT_APP_URL
 // const today = new Date()
 const now = moment();
 
-function Dashboard({ user, setIsLanding}) {
+function Dashboard({ user, setIsLanding, setRedirect}) {
  const [projects, setProjects] = useState([])
  const [isLoading, setIsLoading] = useState(true)
  const [projectsNum, setProjectsNum] = useState(0)
@@ -27,6 +27,7 @@ function Dashboard({ user, setIsLanding}) {
     }})
     setProjects(result.data.projects)
     setProjectsNum(result.data.count)
+    setRedirect(false)
     setIsLoading(false);
    } catch (error) {
      console.log(error)
@@ -115,7 +116,7 @@ console.log('archive', archive)
                 <Card
                   title={project.title}
                   extra={ <h4><Link to={`/projects/${project._id}`}><EyeOutlined className="purple-outline"/></Link></h4>}
-                  className="mt-2 mb-2"
+                  className="mt-2 mb-2 complete"
                 >
                   <p>{project.description}</p>
                   <p><b>Due {moment(project.endDate).format('MMMM Do YYYY')}</b></p>
