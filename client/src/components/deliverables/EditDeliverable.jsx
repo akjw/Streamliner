@@ -54,10 +54,11 @@ function EditDeliverable({user, setRedirectId, setRedirect, setGlobalError, setI
     if (info.name.trim() == "" || info.description.trim() == ""){
       setGlobalError('Name and description cannot be empty')
       return
-    } else if (moment(info.deadline).isBefore(now)){
-      setGlobalError('Deadline cannot be in the past')
-      return 
     } 
+    // else if (moment(info.deadline).isBefore(now)){
+    //   setGlobalError('Deadline cannot be in the past')
+    //   return 
+    // } 
     let token = localStorage.getItem('token');
     let result = await Axios.put(`${URL}/deliverables/${id}`, info, {headers: {
       "x-auth-token": token,

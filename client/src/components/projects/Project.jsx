@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Link, useParams, useHistory} from 'react-router-dom';
 import {Container, Row, Col, Button, Alert, Badge, Card} from 'react-bootstrap';
 import { Card as AnCard, Tooltip, Popconfirm } from 'antd';
-import { EditOutlined, DeleteFilled, PlusSquareTwoTone } from '@ant-design/icons';
+import { EditOutlined, DeleteFilled, PlusSquareTwoTone, CheckOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import Accordion from 'react-bootstrap/Accordion'
 import AddPhase from '../phases/AddPhase'
 import Axios from 'axios';
@@ -186,8 +186,13 @@ console.log('rpoj', project)
                                   {(!isLoading && !phase.deliverables.length) && <p>No {phase.subheader} yet</p>}
                                   {(!isLoading && phase.deliverables ) && phase.deliverables.map(d => {
                                     return <Col key={d._id} md="3">
-                                      <Card className={d.isComplete ? 'complete' : '' }>
-                                        <Card.Body>
+                                      <AnCard className={d.isComplete ? 'complete' : '' }
+                                      extra={!d.isComplete ? <Tooltip title="Mark as complete">
+                                      <CheckOutlined onClick={()=>toggleComplete(d._id, markComplete)}/>
+                                    </Tooltip> : <Tooltip title="Mark as in-progress">
+                                      <CheckCircleOutlined onClick={()=>toggleComplete(d._id, markInProgress)}/>
+                                    </Tooltip>}
+                                      >
                                           <b>{d.name}</b>
                                           <p>{d.description}</p>
                                           <div>
@@ -196,9 +201,6 @@ console.log('rpoj', project)
                                           <div>
                                             <p>Status: {d.isComplete? 'Complete' : 'In-Progress'}</p>
                                           </div>
-                                          <div>
-                                              { !d.isComplete ? <p onClick={()=>toggleComplete(d._id, markComplete)}>Mark complete</p>: <p onClick={()=>toggleComplete(d._id, markInProgress)}>Mark in-progress</p>}
-                                            </div>
                                           {(moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') < 0 && !d.isComplete) ? <p className="red"><i>Overdue</i></p>
                                           : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 1 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} days</b></p> 
                                           : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 0 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} day</b></p> 
@@ -206,8 +208,7 @@ console.log('rpoj', project)
                                             <div>
                                               <Link to={`/deliverables/${d._id}`}>Edit</Link>
                                             </div>
-                                        </Card.Body>
-                                      </Card>
+                                      </AnCard>
                                     </Col>
                                   })}
                                 </Row>
