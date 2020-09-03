@@ -2,7 +2,8 @@ import React, {useState, useEffect}  from 'react'
 import {Row, FormControl, Card, Button, Container, InputGroup, Col} from 'react-bootstrap'
 import Axios from 'axios';
 
-const URL = process.env.REACT_APP_URL
+const URL = process.env.REACT_APP_URL;
+console.log("HERE =================",URL);
 
 
 
