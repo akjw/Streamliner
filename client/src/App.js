@@ -155,12 +155,12 @@ function App() {
                 : isAuth ? <AddDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
               }/>
-
+{/* 
                 <Route path="/organizations/new" exact render={() => 
                 redirect ? <Redirect to="/organizations"/>
                 : (isAuth && isAdmin) ? <AddOrganization user={user} setRedirect={setRedirect} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
-              }/>
+              }/> */}
              
               <Route path="/projects/:id/edit" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/> 
