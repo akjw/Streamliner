@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     //pass in token and jwt secret from auth.route 
     const decoded = jwt.verify(token, 'kaja');
     //.user is from the payload object's key
-    //i'm saving everything in req.user
+    //everything is saved in req.user
     req.user = decoded.user;
     next()
   } catch (error) {

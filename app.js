@@ -9,7 +9,6 @@ const app = express()
 //==== add all middleware
 require('./config/db'); //calls mongoose connection; reduces clutter in this file
 app.use(express.json()); //allows you to receive JSON files from HEADER of REQUEST
-// app.use(morgan(':id :method :url :response-time'))
 app.use(cors()); //allows all requests from outside servers or apps
 
 

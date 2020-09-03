@@ -164,7 +164,7 @@ router.post("/:id/phases/new", checkToken, async (req, res) => {
 
     let phase = await Phase.create({name: req.body.name, project: req.params.id})
     let project = await Project.findByIdAndUpdate(req.params.id, {$push: {phases: phase._id}})
-    // console.log('phase', phase)
+  
     res.status(201).json({
       message: 'New phase created',
     })

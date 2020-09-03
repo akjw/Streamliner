@@ -74,7 +74,7 @@ router.post("/:id/deliverables/new", checkToken, async (req, res) => {
     let project = await Project.findById(phase.project)
     let deliverable = await Deliverable.create({name: req.body.name, description: req.body.description, project: project._id, phase: req.params.id, deadline: deadline, createdBy: req.body.createdBy})
     let updatePhase = await Phase.findByIdAndUpdate(req.params.id, {$push: {deliverables: deliverable._id}})
-    console.log('BIG D', deliverable)
+   
     res.status(201).json({
       message: 'New phase created',
     })

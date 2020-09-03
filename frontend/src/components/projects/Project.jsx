@@ -19,7 +19,8 @@ function Project({ user, setRedirect, redirect, setGlobalError, setIsLanding }) 
  const [isLoading, setIsLoading] = useState(true)
  const [error, setError] = useState(null)
  const [members, setMembers] = useState([])
-//  const [completeDeliverables]
+ const [markComplete, setMarkComplete] = useState({isComplete: true})
+ const [markInProgress, setMarkInProgress] = useState({isComplete: false})
  const [dcount, setDCount] = useState(0)
 
  async function getProject(id){
@@ -38,6 +39,20 @@ function Project({ user, setRedirect, redirect, setGlobalError, setIsLanding }) 
 function toggleForm(){
   setShowAddPhase(!showAddPhase)
   setGlobalError(null)
+}
+
+async function toggleComplete(dId, info){
+  try {
+    console.log(info)
+    let token = localStorage.getItem('token');
+    await Axios.put(`${URL}/deliverables/${dId}/complete`, info, {headers: {
+      "x-auth-token": token,
+    }});
+    getProject(id)
+  } catch (error) {
+    console.log(error)
+    // setError(error.response.data.message)
+  }
 }
 
 async function deleteProject() {
@@ -181,6 +196,9 @@ console.log('rpoj', project)
                                           <div>
                                             <p>Status: {d.isComplete? 'Complete' : 'In-Progress'}</p>
                                           </div>
+                                          <div>
+                                              { !d.isComplete ? <p onClick={()=>toggleComplete(d._id, markComplete)}>Mark complete</p>: <p onClick={()=>toggleComplete(d._id, markInProgress)}>Mark in-progress</p>}
+                                            </div>
                                           {(moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') < 0 && !d.isComplete) ? <p className="red"><i>Overdue</i></p>
                                           : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 1 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} days</b></p> 
                                           : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 0 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} day</b></p> 

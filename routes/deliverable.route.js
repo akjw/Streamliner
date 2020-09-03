@@ -40,8 +40,29 @@ router.put("/:id", checkToken, async (req, res) => {
   }
 })
 
+// Mark as complete
+router.put("/:id/complete", checkToken, async (req, res) => {
+  try {
+    console.log('body', req.body)
+    let deliverable = await Deliverable.findByIdAndUpdate(req.params.id, {isComplete: req.body.isComplete});
+    console.log('edited values', deliverable)
+    if(deliverable){
+      res.status(200).json({
+        message: 'Deliverable was successfully updated'
+      })
+    }
+  }
+  catch(err){
+    res.status(500).json({
+      message: 'Error: Deliverable could not be updated'
+    })
+  }
+})
 
-// Delete phase
+
+
+
+// Delete deliverable
 router.delete("/:id", async (req, res) => {
   try {
     let deliverable = await Deliverable.findById(req.params.id)
