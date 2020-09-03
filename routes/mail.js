@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport(mailGun(auth));
 
 const sendMail = (to, subject, text, html, callback) => {
   const mailOptions = {
-    from: process.env.GMAIL_ADDRESS, // sender address
+    from: process.env.EMAIL, // sender address
     to: to,
     subject, // Subject line
     text, // plain text body
