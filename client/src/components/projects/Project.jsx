@@ -203,6 +203,8 @@ console.log('rpoj', project)
                                           {(moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') < 0 && !d.isComplete) ? <p className="red"><i>Overdue</i></p>
                                           : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 1 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} days</b></p> 
                                           : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') > 0 ? <p><b>Due in {moment(d.deadline).tz('Asia/Singapore').diff(now, 'days')} day</b></p> 
+                                          : moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') < -1 ? <p><b>Due {moment(now).tz('Asia/Singapore').diff(d.deadline, 'days')} days ago</b></p> 
+                                          :  moment(d.deadline).tz('Asia/Singapore').diff(now, 'days') < 0 ? <p><b>Due {moment(now).tz('Asia/Singapore').diff(d.deadline, 'days')} day ago</b></p> 
                                           : <p><b>Due today</b></p>}
                                             <div>
                                               <Link to={`/deliverables/${d._id}`}>Edit</Link>
