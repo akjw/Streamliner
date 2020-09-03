@@ -64,9 +64,9 @@ async function deleteProject() {
   }
 }
 
-async function deletePhase(e) {
+async function deletePhase(phaseid) {
   try {
-    await Axios.delete(`${URL}/phases/${e.target.id}`)
+    await Axios.delete(`${URL}/phases/${phaseid}`)
     getProject(id);
   } catch (error) {
    if(error.response){
@@ -165,13 +165,12 @@ console.log('rpoj', project)
                           </Tooltip>
                           <Popconfirm
                                 title="Are you sure you want to delete this phase?"
-                                onConfirm={deletePhase}
+                                onConfirm={()=>deletePhase(phase._id)}
                                 onCancel={cancel}
-                                id={phase._id}
                                 okText="Yes"
                                 cancelText="No"
                               >
-                               <DeleteFilled id={id} className="mx-2"/>
+                               <DeleteFilled id={phase._id} className="mx-2"/>
                           </Popconfirm>
                           </>
                          : ''}
