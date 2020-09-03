@@ -17,6 +17,7 @@ import EditPhase from './components/phases/EditPhase';
 import AddDeliverable from './components/deliverables/AddDeliverable';
 import EditDeliverable from './components/deliverables/EditDeliverable';
 import EditUser from './components/EditUser';
+import AddOrganization from './components/organizations/AddOrganization';
 
 const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -26,6 +27,7 @@ function App() {
   const [globalError, setGlobalError] = useState(null)
   const [user, setUser] = useState(null)
   const [isAuth, setIsAuth] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [redirect, setRedirect] = useState(false)
   const [isLanding, setIsLanding] = useState(false)
 
@@ -108,8 +110,10 @@ function App() {
         }
       })
       setIsAuth(true);
+      // if(result.data.user.isAdmin){
+      //   setIsAdmin(true)
+      // }
       setUser(result.data.user)
-      console.log('from get user', result.data.user)
     } catch (error) {
       // setGlobalError(error.response.data.message)
     }
@@ -122,7 +126,6 @@ function App() {
        <Router>
           <Navigation user={user} logoutHandler={logoutHandler} isLanding={isLanding}/>
           {globalError && <Alert variant="danger">{globalError}</Alert>}
-          {/* <Container> */}
             <Switch>
             <Route exact path="/" exact render={() => <LandingPage setIsLanding={setIsLanding}/>} />
               {/* <Route exact path="/" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <LandingPage setIsLanding={setIsLanding}/>} /> */}
@@ -152,6 +155,12 @@ function App() {
                 : isAuth ? <AddDeliverable user={user} setRedirect={setRedirect} setRedirectId={setRedirectId} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
                 : <Redirect to="/login"/>
               }/>
+
+                <Route path="/organizations/new" exact render={() => 
+                redirect ? <Redirect to="/organizations"/>
+                : (isAuth && isAdmin) ? <AddOrganization user={user} setRedirect={setRedirect} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/> 
+                : <Redirect to="/login"/>
+              }/>
              
               <Route path="/projects/:id/edit" exact render={() => 
                 redirect ? <Redirect to={`/projects/${redirectId}`}/> 
@@ -175,7 +184,7 @@ function App() {
               <Route path="/register" exact render={() => isAuth ? <Redirect to="/dashboard"/> : <Register registerHandler={registerHandler} setGlobalError={setGlobalError} setIsLanding={setIsLanding}/>} />
               <Route path="/login" exact render={() => isAuth ? <Redirect to="/dashboard" /> : <Login loginHandler={loginHandler} setIsLanding={setIsLanding}/>} />
             </Switch>
-          {/* </Container> */}
+       
         </Router>
     </div>
   );

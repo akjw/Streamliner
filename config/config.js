@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+// require('dotenv').config()
 
 module.exports = (req, res, next) => {
   const token = req.header('x-auth-token');
@@ -10,7 +11,7 @@ module.exports = (req, res, next) => {
   }
   try {
     //pass in token and jwt secret from auth.route 
-    const decoded = jwt.verify(token, 'kaja');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     //.user is from the payload object's key
     //everything is saved in req.user
     req.user = decoded.user;

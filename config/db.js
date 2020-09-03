@@ -1,10 +1,10 @@
-require('dotenv').config()
+// require('dotenv').config()
 
 const mongoose = require('mongoose')
 
 //== connect to mongoose 
 mongoose.connect(
-  process.env.MONGODB,
+  process.env.MONGODBLIVE,
   {
     useCreateIndex: true,
     useNewUrlParser: true,

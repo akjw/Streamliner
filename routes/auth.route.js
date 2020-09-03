@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const checkToken = require('../config/config');
+// require('dotenv').config()
 
 
 /* 
@@ -28,7 +29,7 @@ router.post('/register', async (req, res) => {
         // lastname: user.lastname
       }
     };
-    jwt.sign(payload, "kaja", {expiresIn: 36000000}, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 36000000}, (err, token) => {
       if (err) throw err; //if error go to catch
       res.status(200).json({ message: 'User registered successfully!', token, user: payload });
     })
@@ -70,7 +71,7 @@ router.post('/login', async (req, res) => {
     };
     //gives you a token on login
 
-    jwt.sign(payload, "kaja", {expiresIn: 36000000}, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 36000000}, (err, token) => {
       if (err) throw err; //if error go to catch
       res.status(200).json({ token });
     })
