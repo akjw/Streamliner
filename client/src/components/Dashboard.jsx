@@ -8,7 +8,7 @@ import moment from 'moment-timezone'
 
 const URL = process.env.REACT_APP_URL
 // const today = new Date()
-const now = moment();
+const now = new Date()
 
 function Dashboard({ user, setIsLanding, setRedirect}) {
  const [projects, setProjects] = useState([])

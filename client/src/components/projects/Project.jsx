@@ -8,7 +8,7 @@ import AddPhase from '../phases/AddPhase'
 import Axios from 'axios';
 import moment from 'moment-timezone'
 
-const now = moment();
+const now = new Date()
 const URL = process.env.REACT_APP_URL
 
 function Project({ user, setRedirect, redirect, setGlobalError, setIsLanding }) {
@@ -91,7 +91,7 @@ useEffect(() => {
   }
 }, [isLoading, showAddPhase, project, redirect])
 
-console.log('rpoj', project)
+
   return (
     <div className="mt-4">
        {error && <Alert variant="danger">{error}</Alert>}
