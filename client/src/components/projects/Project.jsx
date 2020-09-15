@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useParams, useHistory} from 'react-router-dom';
 import {Container, Row, Col, Button, Alert, Badge, Card} from 'react-bootstrap';
-import { Card as AnCard, Tooltip, Popconfirm } from 'antd';
-import { EditOutlined, DeleteFilled, PlusSquareTwoTone, CheckOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Card as AnCard, Tooltip, Popconfirm, Collapse } from 'antd';
+import { EditOutlined, DeleteFilled, PlusSquareTwoTone, CheckOutlined, CheckCircleOutlined, RightOutlined, DownOutlined} from '@ant-design/icons';
 import Accordion from 'react-bootstrap/Accordion'
 import AddPhase from '../phases/AddPhase'
 import Axios from 'axios';
 import moment from 'moment-timezone'
 
+const { Panel } = Collapse;
 const now = new Date()
 const URL = process.env.REACT_APP_URL
 
@@ -148,10 +149,16 @@ useEffect(() => {
                 {project.phases.map((phase, i) => (
                       <Card key={i}>
                         <Accordion.Toggle as={Card.Header} eventKey={phase._id} className="accordion-theme">
-                        <div className="d-flex justify-content-between">
-                          <h4>{phase.name}
-                          {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <Badge pill variant="primary" className="mx-2 purple">Active</Badge>}
-                          </h4>
+                          <div className="d-flex justify-content-start">
+                            <h4>{phase.name}
+                            {(project.activePhase && phase._id.toString() == project.activePhase.toString()) && <Badge pill variant="primary" className="mx-2 purple">Active</Badge>}
+                            </h4>
+                          </div>
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey={phase._id}>
+                          <Card.Body>
+                          <h4>{phase.subheader}</h4>
+                          <div className="d-flex justify-content-end">
                           <h4> 
                             <Tooltip title={`New ${phase.subheader}`}>
                             <Link to={`/phases/${phase._id}/deliverables/new`}>
@@ -176,10 +183,6 @@ useEffect(() => {
                          : ''}
                          </h4>
                           </div>
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey={phase._id}>
-                          <Card.Body>
-                          <h4>{phase.subheader}</h4>
                                 <Container fluid className="mt-4">
                                 <Row>
                                   {(!isLoading && !phase.deliverables.length) && <p>No {phase.subheader} yet</p>}
