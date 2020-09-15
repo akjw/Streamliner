@@ -119,3 +119,13 @@
   font-family: Asket;
   font-size: 2em;
 }
+
+.panel-header {
+  font-size: 20px;
+  font-weight: 600;
+  padding-top: 15px
+}
+
+.white-bg {
+  background: white;
+}
