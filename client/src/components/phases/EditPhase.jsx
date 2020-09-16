@@ -32,7 +32,7 @@ function EditPhase({user, setRedirectId, setRedirect, setGlobalError}) {
 
   function changeHandler(e){
     setPhase({...phase, [e.target.name]: e.target.value})
-    console.log('phase val', phase)
+    // console.log('phase val', phase)
   }
 
  async function submitHandler(info){

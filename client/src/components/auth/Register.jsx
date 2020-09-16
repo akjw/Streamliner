@@ -27,7 +27,7 @@ export default function Register ({setIsLanding, registerHandler}){
 
   function changeHandler(e){
     setUserInfo({...userInfo, [e.target.name]: e.target.value})
-    console.log(userInfo)
+    // console.log(userInfo)
   }
 
   async function getOrganizations(){

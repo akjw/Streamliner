@@ -73,7 +73,7 @@ useEffect(() => {
       mounted = false
     }
 }, [])
-console.log('archive', archive)
+
   return (
     <div className="mt-4">
       {error && <Alert variant="danger">{error}</Alert>}

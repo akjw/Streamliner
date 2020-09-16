@@ -45,7 +45,7 @@ function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError, setIs
 
   function changeHandler(e){
     setDeliverable({...deliverable, [e.target.name]: e.target.value})
-    console.log('deliverable val', deliverable)
+    // console.log('deliverable val', deliverable)
   }
 
   async function submitHandler(info){
@@ -56,7 +56,7 @@ function AddDeliverable({user, setRedirect, setRedirectId, setGlobalError, setIs
         return
      } else {
         let token = localStorage.getItem('token');
-        console.log('frontend deliverable', deliverable)
+        // console.log('frontend deliverable', deliverable)
         let result = await Axios.post(`${URL}/phases/${id}/deliverables/new`, info, {headers: {
           "x-auth-token": token,
         }});

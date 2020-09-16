@@ -107,7 +107,6 @@ router.post("/new", checkToken, async (req, res) => {
   try {
     let members = [...req.body.members]
     let newList = members.concat(req.user.id)
-    console.log('new list', newList)
     let project = await Project.create({ title: req.body.title, description: req.body.description, members: newList, createdBy: req.body.createdBy, startDate: req.body.startDate, endDate: req.body.endDate, organization: req.body.organization});
 
 
@@ -143,7 +142,6 @@ router.post("/new", checkToken, async (req, res) => {
 router.get("/:id/phases", checkToken, async (req, res) => {
   try {
     let phases = await Phase.find({project: req.params.id})
-    console.log('phases', phases)
     res.status(201).json({
       message: 'Phases fetched',
       count: phases.length,

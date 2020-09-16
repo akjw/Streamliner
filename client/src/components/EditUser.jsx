@@ -32,7 +32,7 @@ function EditUser({user, setGlobalError, setRedirect, setIsLanding}) {
       })
       setUserInfo(result.data.user)
       setIsLoading(false)
-      console.log('from get user', result.data.user)
+      // console.log('from get user', result.data.user)
     } catch (error) {
       // setGlobalError(error.response.data.message)
     }
@@ -40,7 +40,7 @@ function EditUser({user, setGlobalError, setRedirect, setIsLanding}) {
 
   function changeHandler(e){
     setUserInfo({...userInfo, [e.target.name]: e.target.value})
-    console.log(userInfo)
+    // console.log(userInfo)
   }
 
   async function submitHandler(credentials){

@@ -44,7 +44,7 @@ function toggleForm(){
 
 async function toggleComplete(dId, info){
   try {
-    console.log(info)
+    // console.log(info)
     let token = localStorage.getItem('token');
     await Axios.put(`${URL}/deliverables/${dId}/complete`, info, {headers: {
       "x-auth-token": token,

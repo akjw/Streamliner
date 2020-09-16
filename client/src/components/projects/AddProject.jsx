@@ -42,13 +42,6 @@ function AddProject({user, setRedirect, setGlobalError, setIsLanding}) {
       let result = await Axios.get(`${URL}/users/all/${id}`, {headers: {
         "x-auth-token": token,
       }});
-      // usersList = result.data.users.map(user => {
-      //   return {
-      //     value: user._id,
-      //     label: `${user.firstname} ${user.lastname} (${user.email})`
-      //   }
-      // })
-      console.log('users list', usersList)
       setUsers(result.data.users)
     } catch (error) {
       console.log(error)
@@ -58,7 +51,7 @@ function AddProject({user, setRedirect, setGlobalError, setIsLanding}) {
 
   function changeHandler(e){
     setProject({...project, [e.target.name]: e.target.value})
-    console.log('proj val', project)
+    // console.log('proj val', project)
   }
 
   function handleStartDateChange(date){
@@ -82,7 +75,7 @@ function AddProject({user, setRedirect, setGlobalError, setIsLanding}) {
       membersList.splice(index, 1)
       setProject({...project, members: membersList})  
     }  
-    console.log('proj val', project)
+    // console.log('proj val', project)
 }
 
   async function submitHandler(info){

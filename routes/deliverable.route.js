@@ -24,7 +24,7 @@ router.get("/:id", async (req, res) => {
 // Edit deliverable
 router.put("/:id", checkToken, async (req, res) => {
   try {
-    console.log('user', req.user.id)
+    // console.log('user', req.user.id)
     let deliverable = await Deliverable.findByIdAndUpdate(req.params.id, {name: req.body.name, description: req.body.description, deadline: req.body.deadline, createdBy: req.user.id, isComplete: req.body.isComplete});
     console.log('edited values', deliverable)
     if(deliverable){
@@ -43,9 +43,9 @@ router.put("/:id", checkToken, async (req, res) => {
 // Mark as complete
 router.put("/:id/complete", checkToken, async (req, res) => {
   try {
-    console.log('body', req.body)
+    // console.log('body', req.body)
     let deliverable = await Deliverable.findByIdAndUpdate(req.params.id, {isComplete: req.body.isComplete});
-    console.log('edited values', deliverable)
+    // console.log('edited values', deliverable)
     if(deliverable){
       res.status(200).json({
         message: 'Deliverable was successfully updated'

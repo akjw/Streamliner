@@ -17,12 +17,12 @@ export default function Login({ loginHandler, setIsLanding }){
     })
  
   function changeHandler(e){
-    console.log(e.target.value)
+    // console.log(e.target.value)
     setLoginInfo({...loginInfo, [e.target.name]: e.target.value})
   }
 
   function login(){
-    console.log('login info here', loginInfo)
+    // console.log('login info here', loginInfo)
     loginHandler(loginInfo)
   }
 

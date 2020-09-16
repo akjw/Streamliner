@@ -40,10 +40,10 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError, setIsLan
    let result = await Axios.get(`${URL}/projects/${id}`)
    let data = result.data.project
    let membersAlreadyInProject = result.data.project.members.map(member => { return member._id})
-   console.log('user id', user._id)
-   console.log('all members', membersAlreadyInProject)
+  //  console.log('user id', user._id)
+  //  console.log('all members', membersAlreadyInProject)
    let minusUser = membersAlreadyInProject.filter(memberId => memberId.toString() != user._id.toString())
-   console.log('minus user', minusUser)
+  //  console.log('minus user', minusUser)
    setMembers(minusUser)
    setProject({...data, members: minusUser})
    setIsLoading(false);
@@ -103,19 +103,6 @@ function EditProject({user, setRedirect, setRedirectId, setGlobalError, setIsLan
   function handleEndDateChange(date){
     setProject({...project, endDate: date})
   }
-  
-  function handleInputChange(e){
-    console.log(e.target.checked)
-    if(e.target.checked){
-        setProject({...project, members: [...project.members, e.target.value]})   
-    }else{
-      let membersList = [...project.members]
-      let index = membersList.indexOf(e.target.value)
-      membersList.splice(index, 1)
-      setProject({...project, members: membersList})  
-    }  
-    // console.log('proj val', project)
-}
 
   async function submitHandler(info){
     try {

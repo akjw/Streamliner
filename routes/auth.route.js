@@ -14,7 +14,6 @@ require('dotenv').config()
 router.post('/register', async (req, res) => {
   let {firstname, lastname, email, password, organization } = req.body;
   try {
-    //don't add password to user obj yet
     let user = new User({firstname, lastname, email, organization});
     //bcrypt takes in password and salt
     let hashPassword = await bcrypt.hash(password, 10);
@@ -23,18 +22,14 @@ router.post('/register', async (req, res) => {
 
     const payload = {
       user: {
-        //only send id; DO NOT send other user info over
         id: user._id,
-        // firstname: user.firstname,
-        // lastname: user.lastname
       }
     };
     jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 36000000}, (err, token) => {
       if (err) throw err; //if error go to catch
       res.status(200).json({ message: 'User registered successfully!', token, user: payload });
     })
-    //201 -- success and new data was added
-    // res.status(201).json({message: 'user registered successfully!'});
+ 
   } catch (error) {
     //500 - internal server error
     console.log(error.errors)
@@ -47,7 +42,7 @@ router.post('/register', async (req, res) => {
   @access public
 */
 router.post('/login', async (req, res) => {
-  console.log('sent info', req.body)
+  // console.log('sent info', req.body)
   let {email, password } = req.body;
   try {
     //search db for user w matching email
@@ -65,14 +60,13 @@ router.post('/login', async (req, res) => {
 
     const payload = {
       user: {
-        //only send id; DO NOT send other user info over
         id: user._id
       }
     };
-    //gives you a token on login
+    //token on login
 
     jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 36000000}, (err, token) => {
-      if (err) throw err; //if error go to catch
+      if (err) throw err; 
       res.status(200).json({ token });
     })
 
